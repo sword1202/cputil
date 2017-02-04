@@ -16,7 +16,7 @@ public:
         this->maxSize = maxSize;
     }
 
-    void push_back(T item) {
+    void push_back(const T& item) {
         if (deque.size() == maxSize) {
             deque.pop_front();
         }

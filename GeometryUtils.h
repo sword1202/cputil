@@ -19,9 +19,7 @@ namespace Azazai {
             s1_x = line1x2 - line1x1;     s1_y = line1y2 - line1y1;
             s2_x = line2x2 - line2x1;     s2_y = line2y2 - line2y1;
 
-            Float s, t;
-            s = (-s1_y * (line1x1 - line2x1) + s1_x * (line1y1 - line2y1)) / (-s2_x * s1_y + s1_x * s2_y);
-            t = ( s2_x * (line1y1 - line2y1) - s2_y * (line1x1 - line2x1)) / (-s2_x * s1_y + s1_x * s2_y);
+            Float t = ( s2_x * (line1y1 - line2y1) - s2_y * (line1x1 - line2x1)) / (-s2_x * s1_y + s1_x * s2_y);
 
             Float x = line1x1 + (t * s1_x);
             if (x != x) {
