@@ -9,7 +9,7 @@
 #include <cmath>
 #include <limits>
 
-namespace Azazai {
+namespace CppUtils {
     namespace GeometryUtils {
         template<typename Float>
         bool getLinesIntersection(Float line1x1, Float line1y1, Float line1x2, Float line1y2,

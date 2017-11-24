@@ -7,9 +7,9 @@
 
 #include <algorithm>
 
-namespace Azazai {
+namespace CppUtils {
     template<typename Iterator, typename Element>
-    Iterator find_nearest_element_in_sorted_collection(Iterator begin, Iterator end, const Element& value) {
+    Iterator findNearestElementInSortedCollection(Iterator begin, Iterator end, const Element &value) {
         if (begin == end) {
             return end;
         }

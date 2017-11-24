@@ -8,7 +8,7 @@
 #include <vector>
 #include <deque>
 
-namespace Azazai {
+namespace CppUtils {
 template<typename T>
 class CircularBuffer {
 public:

@@ -9,7 +9,7 @@
 
 #include <cstdint>
 
-namespace Azazai {
+namespace CppUtils {
 namespace TimeUtils {
     int64_t nowInMicroseconds();
 }
