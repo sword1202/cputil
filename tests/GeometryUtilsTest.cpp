@@ -5,7 +5,7 @@
 #include "catch.hpp"
 #include "../GeometryUtils.h"
 
-using namespace Azazai::GeometryUtils;
+using namespace CppUtils::GeometryUtils;
 
 TEST_CASE("lines intersection test") {
 

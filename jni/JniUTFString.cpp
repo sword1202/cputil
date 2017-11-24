@@ -5,8 +5,7 @@
 #include <assert.h>
 #include "JniUTFString.h"
 
-namespace ECM { namespace CalmnessScore {
-
+namespace CppUtils {
 
 JniUTFString::JniUTFString(jstring string, JNIEnv *env) : string(string),
                                                            env(env) {}
@@ -28,4 +27,4 @@ jint JniUTFString::length() const {
 }
 
 
-}}
+}

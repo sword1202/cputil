@@ -5,7 +5,7 @@
 #include "JniDoubleArray.h"
 #include <assert.h>
 
-namespace ECM { namespace CalmnessScore {
+namespace CppUtils {
 
 
 JniDoubleArray::JniDoubleArray(jdoubleArray javaArray, JNIEnv *env) : javaArray(javaArray),
@@ -28,4 +28,4 @@ jint JniDoubleArray::length() const {
 }
 
 
-}}
+}

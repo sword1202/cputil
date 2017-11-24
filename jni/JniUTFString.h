@@ -2,15 +2,16 @@
 // Created by Semyon Tikhonenko on 7/27/17.
 //
 
-#ifndef CALMNESSSCORE_JNIJniUTFString_H
-#define CALMNESSSCORE_JNIJniUTFString_H
+#ifndef CPPUTILS_JNIJniUTFString_H
+#define CPPUTILS_JNIJniUTFString_H
 
 
 #include <jni.h>
+#include "../config.h"
 
-namespace ECM { namespace CalmnessScore {
+namespace CppUtils {
 
-    class JniUTFString {
+    class CPP_UTILS_DLLHIDE JniUTFString {
         jstring string;
         const char *data = nullptr;
         JNIEnv *env;
@@ -23,7 +24,7 @@ namespace ECM { namespace CalmnessScore {
 
         ~JniUTFString();
     };
-}}
+}
 
 
-#endif //CALMNESSSCORE_JNIJniUTFString_H
+#endif //CPPUTILS_JNIJniUTFString_H

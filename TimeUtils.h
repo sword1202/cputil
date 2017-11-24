@@ -8,10 +8,11 @@
 
 
 #include <cstdint>
+#include "config.h"
 
 namespace CppUtils {
 namespace TimeUtils {
-    int64_t nowInMicroseconds();
+    CPP_UTILS_DLLHIDE int64_t nowInMicroseconds();
 }
 }
 

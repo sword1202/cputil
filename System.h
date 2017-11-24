@@ -6,10 +6,11 @@
 #define CPP_SYSTEM_H
 
 #include <string>
+#include "config.h"
 
 namespace CppUtils {
 namespace System {
-    bool getWorkingDirectory(std::string* out);
+    CPP_UTILS_DLLHIDE bool getWorkingDirectory(std::string* out);
 }
 }
 

@@ -2,15 +2,16 @@
 // Created by Semyon Tikhonenko on 7/27/17.
 //
 
-#ifndef CALMNESSSCORE_JNIFLOATARRAY_H
-#define CALMNESSSCORE_JNIFLOATARRAY_H
+#ifndef CPPUTILS_JNIFLOATARRAY_H
+#define CPPUTILS_JNIFLOATARRAY_H
 
 
 #include <jni.h>
+#include "../config.h"
 
-namespace ECM { namespace CalmnessScore {
+namespace CppUtils {
 
-    class JniDoubleArray {
+    class CPP_UTILS_DLLHIDE JniDoubleArray {
         jdoubleArray javaArray;
         jdouble *data = nullptr;
         JNIEnv *env;
@@ -23,7 +24,7 @@ namespace ECM { namespace CalmnessScore {
 
         ~JniDoubleArray();
     };
-}}
+}
 
 
-#endif //CALMNESSSCORE_JNIFLOATARRAY_H
+#endif //CPPUTILS_JNIFLOATARRAY_H
