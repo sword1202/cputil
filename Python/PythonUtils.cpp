@@ -4,7 +4,7 @@
 
 namespace CppUtils {
     namespace PythonUtils {
-        PyObject* CreatePythonListFromDoubleArray(double* array, int size)
+        PyObject* CreatePythonListFromDoubleArray(const double* array, int size)
         {
             assert(size >= 0);
             PyObject *list = PyList_New(size);
@@ -16,7 +16,7 @@ namespace CppUtils {
             return list;
         }
 
-        PyObject* CreatePythonComplexList(double* real, double* image, int size)
+        PyObject* CreatePythonComplexList(const double* real, const double* image, int size)
         {
             assert(size >= 0);
             PyObject *list = PyList_New(size);

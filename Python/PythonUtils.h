@@ -11,9 +11,9 @@
 
 namespace CppUtils {
     namespace PythonUtils {
-        CPP_UTILS_DLLHIDE PyObject* CreatePythonListFromDoubleArray(double* array, int size);
+        CPP_UTILS_DLLHIDE PyObject* CreatePythonListFromDoubleArray(const double* array, int size);
         CPP_UTILS_DLLHIDE std::vector<double> CreateVectorFromDoublePythonList(PyObject* list);
-        CPP_UTILS_DLLHIDE PyObject* CreatePythonComplexList(double* real, double* image, int size);
+        CPP_UTILS_DLLHIDE PyObject* CreatePythonComplexList(const double* real, const double* image, int size);
     }
 }
 
