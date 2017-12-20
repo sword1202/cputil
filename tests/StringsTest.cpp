@@ -26,5 +26,20 @@ TEST_CASE("join test") {
     REQUIRE(Join(e, ", ") == "sdsd");
 
     std::string str = "abcefd";
-    REQUIRE(ReplaceFirst(str, std::string("abc"), std::string("34")) == "34efd");
+    REQUIRE(ReplaceFirst(str, "abc", "34") == "34efd");
+    str = "";
+    REQUIRE(ReplaceFirst(str, "abc", "34") == "");
+    str = "a3";
+    REQUIRE(ReplaceFirst(str, "abc", "34") == "a3");
+
+    str = "abcefd";
+    REQUIRE(ReplaceAll(str, "abc", "34") == "34efd");
+    str = "aaaaaa";
+    REQUIRE(ReplaceAll(str, "a", "b") == "bbbbbb");
+    str = "aaaaaa";
+    REQUIRE(ReplaceAll(str, "c", "b") == "aaaaaa");
+    str = "aaaaaa";
+    REQUIRE(ReplaceAll(str, "", "b") == "aaaaaa");
+    str = "aaaaaa";
+    REQUIRE(ReplaceAll(str, "a", "") == "");
 }

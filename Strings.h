@@ -57,6 +57,46 @@ namespace CppUtils {
             }
         }
 
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> ReplaceFirst(const std::basic_string<Char, Allocator> &source,
+                                                        const Char* value,
+                                                        const Char* replacement) {
+            return ReplaceFirst(source, std::basic_string<Char, Allocator>(value),
+                                std::basic_string<Char, Allocator>(replacement));
+        };
+
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> ReplaceAll(const std::basic_string<Char, Allocator> &source,
+                                                      const std::basic_string<Char, Allocator> &value,
+                                                      const std::basic_string<Char, Allocator> &replacement) {
+            if (value.empty()) {
+                return source;
+            }
+
+            std::basic_string<Char, Allocator> result;
+            result.reserve(source.size());
+
+            size_t prevI = 0;
+            size_t valueLength = value.size();
+            for (size_t i = source.find(value);
+                 i != std::string::npos;
+                 prevI = i + valueLength, i = source.find(value, i + valueLength)) {
+                result.append(prevI + source.begin(), source.begin() + i);
+                result.append(replacement.begin(), replacement.end());
+            }
+
+            result.append(source.begin() + prevI, source.end());
+            return result;
+        };
+
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> ReplaceAll(const std::basic_string<Char, Allocator> &source,
+                                                      const Char* value,
+                                                      const Char* replacement) {
+            return ReplaceAll(source, std::basic_string<Char, Allocator>(value),
+                              std::basic_string<Char, Allocator>(replacement));
+        };
+
 #ifdef __OBJC__
         template<typename Iter>
         NSString* JoinToNSString(Iter begin, Iter end, const char* separator) {
