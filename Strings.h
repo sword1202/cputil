@@ -97,6 +97,29 @@ namespace CppUtils {
                               std::basic_string<Char, Allocator>(replacement));
         };
 
+        template<typename Char, typename Allocator>
+        bool StartsWith(const std::basic_string<Char, Allocator> &source,
+                        const Char* value) {
+            size_t sourceSize = source.size();
+            for (int i = 0; value[i] != '\0'; ++i) {
+                if (sourceSize <= i || value[i] != source[i]) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        template<typename Char, typename Allocator>
+        bool StartsWith(const std::basic_string<Char, Allocator> &source,
+                        const std::basic_string<Char, Allocator> &value) {
+            if (value.size() > source.size()) {
+                return false;
+            }
+
+            return std::equal(value.begin(), value.end(), source.begin());
+        };
+
 #ifdef __OBJC__
         template<typename Iter>
         NSString* JoinToNSString(Iter begin, Iter end, const char* separator) {

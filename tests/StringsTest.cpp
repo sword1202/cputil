@@ -42,4 +42,12 @@ TEST_CASE("join test") {
     REQUIRE(ReplaceAll(str, "", "b") == "aaaaaa");
     str = "aaaaaa";
     REQUIRE(ReplaceAll(str, "a", "") == "");
+
+    str = "12345";
+    REQUIRE(StartsWith(str, "123"));
+    REQUIRE(StartsWith(str, ""));
+    REQUIRE_FALSE(StartsWith(str, "34"));
+    REQUIRE(StartsWith(str, std::string("123")));
+    REQUIRE(StartsWith(str, std::string("")));
+    REQUIRE_FALSE(StartsWith(str, std::string("34")));
 }
