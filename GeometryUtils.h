@@ -12,7 +12,7 @@
 namespace CppUtils {
     namespace GeometryUtils {
         template<typename Float>
-        bool getLinesIntersection(Float line1x1, Float line1y1, Float line1x2, Float line1y2,
+        bool GetLinesIntersection(Float line1x1, Float line1y1, Float line1x2, Float line1y2,
                                   Float line2x1, Float line2y1, Float line2x2, Float line2y2,
                                   Float *intersectionX, Float *intersectionY) {
             Float s1_x, s1_y, s2_x, s2_y;

@@ -27,8 +27,8 @@ TEST_CASE("lines intersection test") {
     float line2y2 = -15;
 
     float intersectionX, intersectionY;
-    bool intersects = getLinesIntersection(line1x1, line1y1, line1x2, line1y2,
-                         line2x1, line2y1, line2x2, line2y2, &intersectionX, &intersectionY);
+    bool intersects = GetLinesIntersection(line1x1, line1y1, line1x2, line1y2,
+                                           line2x1, line2y1, line2x2, line2y2, &intersectionX, &intersectionY);
     REQUIRE(intersects);
     REQUIRE(intersectionX == 25);
     REQUIRE(intersectionY == 3);
@@ -50,8 +50,8 @@ TEST_CASE("lines intersection test") {
     line2y2 = 5;
 
     intersectionX = 0, intersectionY = 0;
-    intersects = getLinesIntersection(line1x1, line1y1, line1x2, line1y2,
-                         line2x1, line2y1, line2x2, line2y2, &intersectionX, &intersectionY);
+    intersects = GetLinesIntersection(line1x1, line1y1, line1x2, line1y2,
+                                      line2x1, line2y1, line2x2, line2y2, &intersectionX, &intersectionY);
     REQUIRE(!intersects);
     REQUIRE(intersectionX == 0);
     REQUIRE(intersectionY == 0);
