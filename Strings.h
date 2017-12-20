@@ -10,34 +10,48 @@
 
 namespace CppUtils {
     namespace Strings {
-        template<typename Iter>
-        std::stringstream JoinToStringStream(Iter begin, Iter end, const char* separator) {
-            std::stringstream stream;
-            std::copy(begin, end, std::ostream_iterator<char>(stream, separator));
+        template<typename Iter, typename Char>
+        std::basic_stringstream<Char> JoinToStringStream(Iter begin, Iter end, const Char* separator) {
+            std::basic_stringstream<Char> stream;
+            if (begin != end) {
+                std::copy(begin, end - 1, std::ostream_iterator<decltype(*begin)>(stream, separator));
+                stream<<*(end - 1);
+            }
             return stream;
         }
 
-        template<typename Container>
-        std::stringstream JoinToStringStream(const Container& container, const char* separator) {
+        template<typename Container, typename Char>
+        std::basic_stringstream<Char> JoinToStringStream(const Container& container, const Char* separator) {
             return JoinToStringStream(container.begin(), container.end(), separator);
         }
 
-        template<typename Iter>
-        std::string Join(Iter begin, Iter end, const char* separator) {
+        template<typename Iter, typename Char>
+        std::basic_string<Char> Join(Iter begin, Iter end, const Char* separator) {
             return JoinToStringStream(begin, end, separator).str();
         }
 
-        template<typename Container>
-        std::string Join(const Container& container, const char* separator) {
+        template<typename Container, typename Char>
+        std::basic_string<Char> Join(const Container& container, const Char* separator) {
             return JoinToStringStream(container, separator).str();
         }
         
-        template<typename String, typename Char>
-        String Replace(const String& source, const Char* replacement) {
-            size_t find = source.find(replacement);
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> ReplaceFirst(const std::basic_string<Char, Allocator> &source,
+                                                        const std::basic_string<Char, Allocator> &value,
+                                                        const std::basic_string<Char, Allocator> &replacement) {
+            size_t find = source.find(value);
             if (find != std::string::npos) {
-                size_t resultSize =
-                String result();
+                size_t resultSize = source.size() + replacement.size() - value.size();
+                std::basic_string<Char, Allocator> result;
+                result.resize(resultSize);
+                auto begin = source.begin();
+                auto i = result.begin();
+                std::copy(begin, begin + find, result.begin());
+                i += find;
+                std::copy(replacement.begin(), replacement.end(), i);
+                i += (replacement.end() - replacement.begin());
+                std::copy(source.begin() + find + value.size(), source.end(), i);
+                return result;
             } else {
                 return source;
             }
