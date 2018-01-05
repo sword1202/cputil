@@ -2,6 +2,9 @@
 // Created by Semyon Tikhonenko on 2/3/17.
 //
 
+#ifndef CPP_UTILS_NO_CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_MAIN
+#endif
 #include "catch.hpp"
 #include "../GeometryUtils.h"
 
