@@ -1,8 +1,10 @@
 #ifndef CPP_UTILS_STRINGS
 #define CPP_UTILS_STRINGS
 
-#import <string>
-#import <sstream>
+#include <string>
+#include <sstream>
+#include <fstream>
+
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
@@ -132,6 +134,17 @@ namespace CppUtils {
             return JoinToNSString(container.negin(), container.end(), separator);
         }
 #endif
+
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> StreamToString(std::basic_istream<Char>& stream) {
+            return std::basic_string<Char, Allocator>(std::istreambuf_iterator<Char>(stream), {});
+        }
+
+        template<typename Char>
+        std::basic_string<Char> ReadFileIntoString(const char* filePath) {
+            std::basic_fstream<Char> file(filePath);
+            return StreamToString(file);
+        }
     }
 }
 
