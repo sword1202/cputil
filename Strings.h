@@ -135,9 +135,9 @@ namespace CppUtils {
         }
 #endif
 
-        template<typename Char, typename Allocator>
-        std::basic_string<Char, Allocator> StreamToString(std::basic_istream<Char>& stream) {
-            return std::basic_string<Char, Allocator>(std::istreambuf_iterator<Char>(stream), {});
+        template<typename Char>
+        std::basic_string<Char> StreamToString(std::basic_istream<Char>& stream) {
+            return std::basic_string<Char>(std::istreambuf_iterator<Char>(stream), {});
         }
 
         template<typename Char>

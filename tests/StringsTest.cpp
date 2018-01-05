@@ -4,7 +4,7 @@
 
 using namespace CppUtils::Strings;
 
-TEST_CASE("join test") {
+TEST_CASE("join") {
     std::vector<int> a = {1,2,3,4,55,29};
     REQUIRE(Join(a.begin(), a.end(), ",") == "1,2,3,4,55,29");
     REQUIRE(Join(a, ",") == "1,2,3,4,55,29");
@@ -24,7 +24,9 @@ TEST_CASE("join test") {
     e = {"sdsd"};
     REQUIRE(Join(e.begin(), e.end(), ", ") == "sdsd");
     REQUIRE(Join(e, ", ") == "sdsd");
+}
 
+TEST_CASE("replace") {
     std::string str = "abcefd";
     REQUIRE(ReplaceFirst(str, "abc", "34") == "34efd");
     str = "";
@@ -42,12 +44,19 @@ TEST_CASE("join test") {
     REQUIRE(ReplaceAll(str, "", "b") == "aaaaaa");
     str = "aaaaaa";
     REQUIRE(ReplaceAll(str, "a", "") == "");
+}
 
-    str = "12345";
+TEST_CASE("starts with") {
+    std::string str = "12345";
     REQUIRE(StartsWith(str, "123"));
     REQUIRE(StartsWith(str, ""));
     REQUIRE_FALSE(StartsWith(str, "34"));
     REQUIRE(StartsWith(str, std::string("123")));
     REQUIRE(StartsWith(str, std::string("")));
     REQUIRE_FALSE(StartsWith(str, std::string("34")));
+}
+
+TEST_CASE("stream to string") {
+    std::istringstream stream("abcd");
+    REQUIRE(StreamToString(stream) == "abcd");
 }
