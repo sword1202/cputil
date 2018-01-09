@@ -9,7 +9,7 @@
 
 namespace CppUtils {
     template<typename Iterator, typename Element>
-    Iterator findNearestElementInSortedCollection(Iterator begin, Iterator end, const Element &value) {
+    Iterator FindNearestElementInSortedCollection(Iterator begin, Iterator end, const Element &value) {
         if (begin == end) {
             return end;
         }
@@ -33,6 +33,15 @@ namespace CppUtils {
             return lowerBound;
         }
     };
-}
+
+    template<typename Collection, typename Value, typename Predicate>
+    typename Collection::iterator FindLessOrEqualInSortedCollection(const Collection& collection,
+            const Value& value, const Predicate& predicate) {
+        return std::lower_bound(collection.rbegin(), collection.rend(), value, [&] (const Value& a, const Value& b) {
+            return predicate(b, a);
+        }).base();
+
+    }
+};
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
