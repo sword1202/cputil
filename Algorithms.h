@@ -35,11 +35,22 @@ namespace CppUtils {
     };
 
     template<typename Collection, typename Value, typename Predicate>
-    typename Collection::iterator FindLessOrEqualInSortedCollection(const Collection& collection,
+    typename Collection::iterator FindLessOrEqualInSortedCollection(Collection& collection,
             const Value& value, const Predicate& predicate) {
-        return std::lower_bound(collection.rbegin(), collection.rend(), value, [&] (const Value& a, const Value& b) {
-            return predicate(b, a);
-        }).base();
+        auto upper = std::upper_bound(collection.begin(), collection.end(), value, predicate);
+        if (upper == collection.begin()) {
+            return collection.end();
+        }
+
+        return upper - 1;
+    }
+
+    template<typename Collection, typename Value>
+    typename Collection::iterator FindLessOrEqualInSortedCollection(Collection& collection,
+                                                                    const Value& value) {
+        return FindLessOrEqualInSortedCollection(collection, value, [&] (const Value& a, const Value& b) {
+            return a < b;
+        });
 
     }
 };
