@@ -12,11 +12,7 @@
 
 namespace CppUtils {
 namespace TimeUtils {
-#ifdef __APPLE__
 	CPP_UTILS_DLLHIDE int64_t NowInMicroseconds();
-#else
-	int64_t NowInMicroseconds();
-#endif
 }
 }
 

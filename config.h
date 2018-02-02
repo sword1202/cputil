@@ -3,5 +3,9 @@
 //
 
 #ifndef CPP_UTILS_DLLHIDE
-#define CPP_UTILS_DLLHIDE __attribute__((visibility ("hidden")))
+#ifdef __APPLE__
+    #define CPP_UTILS_DLLHIDE __attribute__((visibility ("hidden")))
+#else
+    #define CPP_UTILS_DLLHIDE
+#endif
 #endif
