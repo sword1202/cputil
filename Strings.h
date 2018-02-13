@@ -15,12 +15,37 @@ namespace CppUtils {
         template<typename Iter, typename Char>
         std::basic_stringstream<Char> JoinToStringStream(Iter begin, Iter end, const Char* separator) {
             std::basic_stringstream<Char> stream;
+            JoinToStream(stream, begin, end, separator);
+            return stream;
+        }
+
+        template<typename Iter, typename Char>
+        void JoinToStream(std::basic_ostream<Char>& stream, Iter begin, Iter end, const Char* separator) {
             if (begin != end) {
                 std::copy(begin, end - 1, std::ostream_iterator<decltype(*begin)>(stream, separator));
                 stream<<*(end - 1);
             }
-            return stream;
         }
+
+        template<typename Iter, typename Char, typename StreamWriter>
+        void JoinToStream(std::basic_ostream<Char>& stream,
+                Iter begin, Iter end, const Char* separator, const StreamWriter& streamWriter) {
+            while (begin != end - 1) {
+                streamWriter(stream, *begin);
+                stream<<separator;
+                begin++;
+            }
+
+            if (begin != end) {
+                streamWriter(stream, *begin);
+            }
+        }
+
+        template<typename Container, typename Char, typename StreamWriter>
+        void JoinToStream(std::basic_ostream<Char>& stream,
+                const Container& container, const Char* separator, const StreamWriter& streamWriter) {
+            JoinToStream(stream, container.begin(), container.end(), separator, streamWriter);
+        };
 
         template<typename Container, typename Char>
         std::basic_stringstream<Char> JoinToStringStream(const Container& container, const Char* separator) {
