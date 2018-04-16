@@ -170,6 +170,28 @@ namespace CppUtils {
             std::basic_fstream<Char> file(filePath);
             return StreamToString(file);
         }
+
+        template<typename Char>
+        std::basic_string<Char> ReadUntilTokenOrEof(std::istream& is, const Char* token) {
+            std::string result;
+            Char ch;
+            int tokenIndex = 0;
+            while (!is.eof()) {
+                Char tokenCh = token[tokenIndex];
+                if (tokenCh == (Char)'\0'){
+                    result.erase(result.end() - tokenIndex, result.end());
+                    return result;
+                }
+
+                is >> ch;
+                result.push_back(ch);
+                if (tokenCh == ch) {
+                    tokenIndex++;
+                } else {
+                    tokenIndex = 0;
+                }
+            }
+        }
     }
 }
 
