@@ -191,6 +191,8 @@ namespace CppUtils {
                     tokenIndex = 0;
                 }
             }
+
+            return result;
         }
     }
 }
