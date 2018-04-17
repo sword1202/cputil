@@ -184,7 +184,7 @@ namespace CppUtils {
                     return result;
                 }
 
-                is >> ch;
+                ch = is.get();
                 result.push_back(ch);
                 if (tokenCh == ch) {
                     tokenIndex++;
