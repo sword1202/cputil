@@ -60,3 +60,17 @@ TEST_CASE("stream to string") {
     std::istringstream stream("abcd");
     REQUIRE(StreamToString(stream) == "abcd");
 }
+
+TEST_CASE("split") {
+    REQUIRE(Split("", ',') == std::vector<std::string>());
+    REQUIRE(Split("werterw,343443,sdfgdfsg,", ',') == std::vector<std::string> {"werterw", "343443", "sdfgdfsg", ""});
+    REQUIRE(Split("werterw,343443,sdfgdfsg", ',') == std::vector<std::string> {"werterw", "343443", "sdfgdfsg"});
+    REQUIRE(Split("werterw", ',') == std::vector<std::string> {"werterw"});
+    REQUIRE(Split("werterw,343443,sdfgdfsg,", 5, 10, ',') == std::vector<std::string> {"rw","34"});
+    bool success;
+    REQUIRE(SplitIntegers("12,345,4567", 0, 10, ',', &success) == std::vector<int> {12, 345, 456});
+    REQUIRE(success);
+
+    SplitIntegers("12,dsds,3", 0, 10, ',', &success);
+    REQUIRE(!success);
+}

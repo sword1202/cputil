@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <vector>
 
 
 #ifdef __OBJC__
@@ -194,6 +195,73 @@ namespace CppUtils {
 
             return result;
         }
+
+        template<typename Char>
+        // [begin, end)
+        std::vector<std::basic_string<Char>> Split(const std::basic_string<Char>& string, int begin, int end, char delimiter) {
+            std::vector<std::basic_string<Char>> result;
+            if (string.empty()) {
+                return result;
+            }
+
+            for (int i = begin; i < end; ++i) {
+                char ch = string[i];
+                if (ch == delimiter) {
+                    auto substr = string.substr(begin, i - begin);
+                    begin = i + 1;
+                    result.push_back(substr);
+                }
+            }
+
+            auto substr = string.substr(begin, end - begin);
+            result.push_back(substr);
+
+            return result;
+        }
+
+        template<typename Char>
+        // [begin, end)
+        std::vector<std::basic_string<Char>> Split(const Char* string, int begin, int end, char delimiter) {
+            return Split(std::basic_string<Char>(string), begin, end, delimiter);
+        }
+
+        template<typename Char>
+        std::vector<std::basic_string<Char>> Split(const std::basic_string<Char>& string, Char delimiter) {
+            return Split(string, 0, string.size(), delimiter);
+        }
+
+        template<typename Char>
+        std::vector<std::basic_string<Char>> Split(const Char* string, Char delimiter) {
+            return Split(std::basic_string<Char>(string), delimiter);
+        }
+
+        template<typename Char>
+        std::vector<int> SplitIntegers(const std::basic_string<Char>& string, 
+                int begin, int end, Char delimiter, bool* success) {
+            std::vector<int> result;
+            auto split = Split(string, begin, end, delimiter);
+            for (const auto& str : split) {
+                int value;
+                try {
+                    value = std::stoi(str);
+                } catch (...) {
+                    *success = false;
+                    return result;
+                }
+
+                result.push_back(value);
+            }
+
+            *success = true;
+            return result;
+        }
+
+        template<typename Char>
+        std::vector<int> SplitIntegers(const Char* string,
+                int begin, int end, Char delimiter, bool* success) {
+            return SplitIntegers(std::basic_string<Char>(string), begin, end, delimiter, success);
+        }
+
     }
 }
 
