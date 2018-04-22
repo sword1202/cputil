@@ -5,7 +5,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
-
+#include "Streams.h"
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
@@ -166,9 +166,15 @@ namespace CppUtils {
             return std::basic_string<Char>(std::istreambuf_iterator<Char>(stream), {});
         }
 
-        template<typename Char>
+        template<typename Char = char>
+        std::basic_string<Char> ReadBinaryFileContent(const char* filePath) {
+            std::basic_fstream<Char> file = Streams::OpenFile(filePath, std::ios::binary | std::ios::in);
+            return StreamToString(file);
+        }
+
+        template<typename Char = char>
         std::basic_string<Char> ReadFileIntoString(const char* filePath) {
-            std::basic_fstream<Char> file(filePath);
+            std::basic_fstream<Char> file = Streams::OpenFile(filePath, std::ios::in);
             return StreamToString(file);
         }
 
