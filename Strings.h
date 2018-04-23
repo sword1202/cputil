@@ -179,7 +179,7 @@ namespace CppUtils {
         }
 
         template<typename Char>
-        std::basic_string<Char> ReadUntilTokenOrEof(std::istream& is, const Char* token) {
+        std::basic_string<Char> ReadUntilTokenOrEof(std::basic_istream<Char>& is, const Char* token) {
             std::string result;
             Char ch;
             int tokenIndex = 0;
