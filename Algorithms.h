@@ -51,8 +51,19 @@ namespace CppUtils {
         return FindLessOrEqualInSortedCollection(collection, value, [&] (const Value& a, const Value& b) {
             return a < b;
         });
-
     }
+
+    template<typename Iterator, typename KeyProvider>
+    void SortByKey(Iterator begin, Iterator end, const KeyProvider& keyProvider) {
+        std::sort(begin, end, [&keyProvider](const decltype(*begin)& a, const decltype(*begin)& b) {
+            return keyProvider(a) < keyProvider(b);
+        });
+    }
+
+    template<typename Collection, typename KeyProvider>
+    void SortByKey(Collection& collection, const KeyProvider& keyProvider) {
+        SortByKey(collection.begin(), collection.end(), keyProvider);
+    };
 };
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
