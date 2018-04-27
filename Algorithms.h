@@ -64,6 +64,34 @@ namespace CppUtils {
     void SortByKey(Collection& collection, const KeyProvider& keyProvider) {
         SortByKey(collection.begin(), collection.end(), keyProvider);
     };
+
+    // Returns an iterator pointing to the first element in the range [first, last) that is not
+    // less than (i.e. greater or equal to) value, or last if no such element is found.
+    template<typename Iterator, typename KeyProvider, typename Value>
+    Iterator LowerBoundByKey(Iterator begin, Iterator end, const Value& value, const KeyProvider& keyProvider) {
+        return std::lower_bound(begin, end, value, [&](const Value& a, const Value b){
+            return keyProvider(a) < keyProvider(b);
+        });
+    }
+
+    template<typename Collection, typename KeyProvider, typename Value>
+    auto LowerBoundByKey(Collection& collection, const Value& value, const KeyProvider& keyProvider) {
+        return LowerBoundByKey(collection.begin(), collection.end(), value, keyProvider);
+    };
+
+    // Returns an iterator pointing to the first element in the range [first, last)
+    // that is greater than value, or last if no such element is found.
+    template<typename Iterator, typename KeyProvider, typename Value>
+    Iterator UpperBoundByKey(Iterator begin, Iterator end, const Value& value, const KeyProvider& keyProvider) {
+        return std::upper_bound(begin, end, value, [&](const Value& a, const Value b){
+            return keyProvider(a) < keyProvider(b);
+        });
+    }
+
+    template<typename Collection, typename KeyProvider, typename Value>
+    auto UpperBoundByKey(Collection& collection, const Value& value, const KeyProvider& keyProvider) {
+        return UpperBoundByKey(collection.begin(), collection.end(), value, keyProvider);
+    };
 };
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
