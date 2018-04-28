@@ -6,6 +6,7 @@
 #define PITCHDETECTION_AZAZAI_ALGO_H
 
 #include <algorithm>
+#include "StlDebugUtils.h"
 
 namespace CppUtils {
     template<typename Iterator, typename Element>
@@ -76,7 +77,7 @@ namespace CppUtils {
 
     template<typename Collection, typename KeyProvider, typename Value>
     auto LowerBoundByKey(Collection& collection, const Value& value, const KeyProvider& keyProvider) {
-        return LowerBoundByKey(collection.begin(), collection.end(), value, keyProvider);
+        return LowerBoundByKey(StlDebugUtils::begin(collection), StlDebugUtils::end(collection), value, keyProvider);
     };
 
     // Returns an iterator pointing to the first element in the range [first, last)
@@ -90,7 +91,7 @@ namespace CppUtils {
 
     template<typename Collection, typename KeyProvider, typename Value>
     auto UpperBoundByKey(Collection& collection, const Value& value, const KeyProvider& keyProvider) {
-        return UpperBoundByKey(collection.begin(), collection.end(), value, keyProvider);
+        return UpperBoundByKey(StlDebugUtils::begin(collection), StlDebugUtils::end(collection), value, keyProvider);
     };
 };
 
