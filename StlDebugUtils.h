@@ -36,10 +36,12 @@ namespace CppUtils {
             }
 
             bool operator==(const vector_iterator &rhs) const {
+                assert(vector == rhs.vector);
                 return iter == rhs.iter;
             }
 
             bool operator!=(const vector_iterator &rhs) const {
+                assert(vector == rhs.vector);
                 return !(rhs == *this);
             }
 
@@ -140,10 +142,12 @@ namespace CppUtils {
             }
 
             bool operator==(const vector_const_iterator &rhs) const {
+                assert(vector == rhs.vector);
                 return iter == rhs.iter;
             }
 
             bool operator!=(const vector_const_iterator &rhs) const {
+                assert(vector == rhs.vector);
                 return !(rhs == *this);
             }
 
