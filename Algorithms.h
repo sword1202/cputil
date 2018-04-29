@@ -93,6 +93,32 @@ namespace CppUtils {
     auto UpperBoundByKey(Collection& collection, const Value& value, const KeyProvider& keyProvider) {
         return UpperBoundByKey(StlDebugUtils::begin(collection), StlDebugUtils::end(collection), value, keyProvider);
     };
+
+    template<typename Iterator, typename KeyProvider>
+    Iterator FindMinUsingKeyProvider(Iterator begin, Iterator end, const KeyProvider& keyProvider) {
+        return std::min_element(begin, end, [&](const decltype(*begin)& a, const decltype(*begin)& b){
+            return keyProvider(a) < keyProvider(b);
+        });
+    }
+
+    template<typename Collection, typename KeyProvider>
+    auto FindMinUsingKeyProvider(Collection& collection, const KeyProvider& keyProvider) {
+        return FindMinUsingKeyProvider(StlDebugUtils::begin(collection), StlDebugUtils::end(collection), keyProvider);
+    };
+
+    template<typename Iterator, typename KeyProvider>
+    const auto& FindMinValueUsingKeyProvider(Iterator begin, Iterator end, const KeyProvider& keyProvider) {
+        assert(begin != end);
+        return *std::min_element(begin, end, [&](const decltype(*begin)& a, const decltype(*begin) b){
+            return keyProvider(a) < keyProvider(b);
+        });
+    }
+
+    template<typename Collection, typename KeyProvider>
+    const auto& FindMinValueUsingKeyProvider(const Collection& collection, const KeyProvider& keyProvider) {
+        return FindMinValueUsingKeyProvider(StlDebugUtils::begin(collection), StlDebugUtils::end(collection),
+                keyProvider);
+    };
 };
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
