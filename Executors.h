@@ -13,6 +13,7 @@ namespace CppUtils {
 
     namespace Executors {
         void ExecuteOnMainThreadAfterDelay(std::function<void()> function, int delayInMilliseconds);
+        void ExecuteOnMainThread(std::function<void()> function);
     }
 
 }
