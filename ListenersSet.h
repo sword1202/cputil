@@ -7,56 +7,49 @@
 #define VOCALTRAINER_LISTENERSSET_H
 
 #include <functional>
-#include <map>
+#include <unordered_map>
 
 namespace CppUtils {
+    enum ListenerAction {
+        DONT_DELETE_LISTENER,
+        DELETE_LISTENER
+    };
 
-template<typename... Args>
-class ListenersSet {
-public:
-    typedef std::function<void(Args...)> function;
-private:
-    std::map<int, function> listeners;
-public:
-    int addListener(const function &func) {
-        int key = 0;
-        auto rbegin = listeners.rbegin();
-        if (rbegin != listeners.rend()) {
-            key = rbegin->first;
-        }
-        listeners[key] = func;
+    template<typename... Args>
+    class ListenersSet {
+    public:
 
-        return key;
-    }
+        typedef std::function<ListenerAction(Args...)> function;
+    private:
+        std::unordered_map<int, function> listeners;
+        int nextKey = 0;
+    public:
+        int addListener(const function &func) {
+            int key = nextKey++;
+            listeners[key] = func;
 
-    int addOneShotListener(function func) {
-        int key = 0;
-        auto rbegin = listeners.rbegin();
-        if (rbegin != listeners.rend()) {
-            key = rbegin->first;
+            return key;
         }
 
-        func = [=](Args... args) {
-            func(args);
-            listeners.erase(key);
-        };
-
-        listeners[key] = func;
-
-        return key;
-    }
-
-    void removeListener(int key) {
-        size_t numberOfElementsRemoved = listeners.erase(key);
-        assert(numberOfElementsRemoved == 1);
-    }
-
-    void executeAll(Args... args) {
-        for (const auto& pair : listeners) {
-            pair.second(args...);
+        void removeListener(int key) {
+            size_t numberOfElementsRemoved = listeners.erase(key);
+            assert(numberOfElementsRemoved == 1);
         }
-    }
-};
+
+        void executeAll(Args... args) {
+            for (auto iter = listeners.begin(); iter != listeners.end();) {
+                if (iter->second(args...) == DELETE_LISTENER) {
+                    iter = listeners.erase(iter);
+                } else {
+                    ++iter;
+                }
+            }
+        }
+
+        bool hasListenersToExecute() const {
+            return !listeners.empty();
+        }
+    };
 
 }
 
