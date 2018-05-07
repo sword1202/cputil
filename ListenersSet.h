@@ -7,7 +7,7 @@
 #define VOCALTRAINER_LISTENERSSET_H
 
 #include <functional>
-#include <unordered_map>
+#include <map>
 
 namespace CppUtils {
     enum ListenerAction {
@@ -21,7 +21,7 @@ namespace CppUtils {
 
         typedef std::function<ListenerAction(Args...)> function;
     private:
-        std::unordered_map<int, function> listeners;
+        std::map<int, function> listeners;
         int nextKey = 0;
     public:
         int addListener(const function &func) {
