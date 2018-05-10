@@ -27,7 +27,6 @@ namespace CppUtils {
         void stop();
     };
 
-#ifndef NO_BOOST
     class PeriodicallySleepingBackgroundTaskWithCallbacksQueue : public PeriodicallySleepingBackgroundTask {
         SynchronizedCallbacksQueue queue;
     public:
@@ -36,7 +35,6 @@ namespace CppUtils {
         void runWithSleepingIntervalInMicroseconds(int64_t interval);
         void postCallback(const std::function<void()>& callback);
     };
-#endif
 }
 
 

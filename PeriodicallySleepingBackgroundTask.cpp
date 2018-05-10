@@ -46,7 +46,6 @@ bool PeriodicallySleepingBackgroundTask::isRunning() const {
     return running;
 }
 
-#ifndef NO_BOOST
 void PeriodicallySleepingBackgroundTaskWithCallbacksQueue::runWithSleepingIntervalInMicroseconds(
         const std::function<void()> &action, int64_t interval) {
     PeriodicallySleepingBackgroundTask::runWithSleepingIntervalInMicroseconds([=] {
@@ -71,5 +70,3 @@ void PeriodicallySleepingBackgroundTaskWithCallbacksQueue::runWithSleepingInterv
 void PeriodicallySleepingBackgroundTaskWithCallbacksQueue::postCallback(const std::function<void()> &callback) {
     queue.post(callback);
 }
-
-#endif
