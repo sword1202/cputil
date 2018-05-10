@@ -17,6 +17,8 @@ namespace CppUtils {
         std::function<void()> onTaskFinished;
     public:
 
+        bool isRunning() const;
+
         PeriodicallySleepingBackgroundTask();
         ~PeriodicallySleepingBackgroundTask();
 
