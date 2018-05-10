@@ -119,6 +119,19 @@ namespace CppUtils {
         return FindMinValueUsingKeyProvider(StlDebugUtils::begin(collection), StlDebugUtils::end(collection),
                 keyProvider);
     };
+
+    template<typename Iterator, typename KeyProvider>
+    std::pair<Iterator, Iterator> FindMinMaxUsingKeyProvider(Iterator begin, Iterator end, const KeyProvider& keyProvider) {
+        return std::minmax_element(begin, end, [&](const decltype(*begin)& a, const decltype(*begin)& b){
+            return keyProvider(a) < keyProvider(b);
+        });
+    }
+
+    template<typename Collection, typename KeyProvider>
+    auto FindMinMaxUsingKeyProvider(const Collection& collection, const KeyProvider& keyProvider) {
+        return FindMinMaxUsingKeyProvider(collection.begin(), collection.end(),
+                keyProvider);
+    }
 };
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
