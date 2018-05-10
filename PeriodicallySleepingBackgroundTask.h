@@ -8,6 +8,7 @@
 
 #include <atomic>
 #include <functional>
+#include "SynchronizedCallbacksQueue.h"
 
 namespace CppUtils {
 
@@ -18,10 +19,22 @@ namespace CppUtils {
 
         PeriodicallySleepingBackgroundTask();
         ~PeriodicallySleepingBackgroundTask();
-        void runWithSleepingIntervalInMicroseconds(const std::function<void()> &action, int64_t interval);
+
+        virtual void runWithSleepingIntervalInMicroseconds(const std::function<void()> &action, int64_t interval);
         void stop(std::function<void()> onTaskFinished);
         void stop();
     };
+
+#ifndef NO_BOOST
+    class PeriodicallySleepingBackgroundTaskWithCallbacksQueue : public PeriodicallySleepingBackgroundTask {
+        SynchronizedCallbacksQueue queue;
+    public:
+        void processQueue();
+        void runWithSleepingIntervalInMicroseconds(const std::function<void()> &action, int64_t interval) override;
+        void runWithSleepingIntervalInMicroseconds(int64_t interval);
+        void postCallback(const std::function<void()>& callback);
+    };
+#endif
 }
 
 

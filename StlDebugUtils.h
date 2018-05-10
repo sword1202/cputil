@@ -8,7 +8,7 @@
 
 #include <assert.h>
 
-#define _LIBCPP_ASSERT(a, b) assert(a && b)
+#include "stlassert.h"
 
 #include <vector>
 
