@@ -14,6 +14,7 @@ PeriodicallySleepingBackgroundTask::PeriodicallySleepingBackgroundTask() : runni
 void PeriodicallySleepingBackgroundTask::runWithSleepingIntervalInMicroseconds(
         const std::function<void()> &action, int64_t interval) {
     assert(!running);
+    running = true;
     std::thread thread([=] {
         while (running) {
             action();
