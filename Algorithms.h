@@ -66,6 +66,18 @@ namespace CppUtils {
         SortByKey(collection.begin(), collection.end(), keyProvider);
     };
 
+    template<typename Iterator, typename KeyProvider>
+    Iterator MaxByKey(Iterator begin, Iterator end, const KeyProvider& keyProvider) {
+        return std::max_element(begin, end, [&keyProvider](const decltype(*begin)& a, const decltype(*begin)& b) {
+            return keyProvider(a) < keyProvider(b);
+        });
+    }
+
+    template<typename Collection, typename KeyProvider>
+    auto MaxByKey(Collection& collection, const KeyProvider& keyProvider) {
+        return MaxByKey(StlDebugUtils::begin(collection), StlDebugUtils::end(collection), keyProvider);
+    };
+
     // Returns an iterator pointing to the first element in the range [first, last) that is not
     // less than (i.e. greater or equal to) value, or last if no such element is found.
     template<typename Iterator, typename KeyProvider, typename Value>
@@ -131,6 +143,53 @@ namespace CppUtils {
     auto FindMinMaxUsingKeyProvider(const Collection& collection, const KeyProvider& keyProvider) {
         return FindMinMaxUsingKeyProvider(collection.begin(), collection.end(),
                 keyProvider);
+    }
+
+
+    template<typename Collection, typename Predicate>
+    int FindIndex(const Collection& collection, const Predicate& predicate) {
+        for (int i = 0; i < collection.size(); ++i) {
+            if (predicate(collection[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    template<typename Collection, typename Predicate>
+    std::vector<int> FindIndexes(const Collection& collection, const Predicate& predicate) {
+        std::vector<int> result;
+
+        for (int i = 0; i < collection.size(); ++i) {
+            if (predicate(collection[i])) {
+                result.push_back(i);
+            }
+        }
+
+        return result;
+    }
+
+    template<typename Iterator, typename Predicate>
+    bool Contains(Iterator begin, Iterator end, const Predicate& predicate) {
+        for (auto iter = begin; iter != end; ++iter) {
+            if (predicate(*iter)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    template<typename Collection, typename Predicate>
+    bool ContainsIndex(const Collection& collection, const Predicate& predicate) {
+        for (int i = 0; i < collection.size(); ++i) {
+            if (predicate(i)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };
 
