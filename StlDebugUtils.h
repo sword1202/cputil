@@ -252,10 +252,10 @@ namespace CppUtils {
 #else
         // TODO: add release support
         template <typename T>
-        using vector_iterator = std::vector<T>::iterator;
+        using vector_iterator = typename std::vector<T>::iterator;
     
         template <typename T>
-        using vector_const_iterator = std::vector<T>::const_iterator;
+        using vector_const_iterator = typename std::vector<T>::const_iterator;
     
             template<typename T>
         vector_iterator<T> begin(std::vector<T>& vector) {
