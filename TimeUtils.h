@@ -13,6 +13,7 @@
 namespace CppUtils {
 namespace TimeUtils {
 	CPP_UTILS_DLLHIDE int64_t NowInMicroseconds();
+	CPP_UTILS_DLLHIDE double NowInSeconds();
 }
 }
 
