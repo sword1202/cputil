@@ -24,12 +24,14 @@ void PeriodicallySleepingBackgroundTask::runWithSleepingIntervalInMicroseconds(
             onTaskFinished();
             onTaskFinished = nullptr;
         }
+
+        delete this;
     });
     thread.detach();
 }
 
 PeriodicallySleepingBackgroundTask::~PeriodicallySleepingBackgroundTask() {
-    running = false;
+
 }
 
 void PeriodicallySleepingBackgroundTask::stop(std::function<void()> onTaskFinished) {

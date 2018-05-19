@@ -15,12 +15,15 @@ namespace CppUtils {
     class PeriodicallySleepingBackgroundTask {
         std::atomic_bool running;
         std::function<void()> onTaskFinished;
+    protected:
+        // deleted automatically after task is finished, don't allocate memory without running
+        // runWithSleepingIntervalInMicroseconds
+        virtual ~PeriodicallySleepingBackgroundTask();
     public:
 
         bool isRunning() const;
 
         PeriodicallySleepingBackgroundTask();
-        ~PeriodicallySleepingBackgroundTask();
 
         virtual void runWithSleepingIntervalInMicroseconds(const std::function<void()> &action, int64_t interval);
         void stop(std::function<void()> onTaskFinished);
