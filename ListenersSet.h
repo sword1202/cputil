@@ -8,6 +8,7 @@
 
 #include <functional>
 #include <map>
+#include <numeric>
 
 namespace CppUtils {
     enum ListenerAction {
@@ -15,10 +16,11 @@ namespace CppUtils {
         DELETE_LISTENER
     };
 
+    constexpr int NullKey = std::numeric_limits<int>::min();
+
     template<typename... Args>
     class ListenersSet {
     public:
-
         typedef std::function<ListenerAction(Args...)> function;
     private:
         std::map<int, function> listeners;
@@ -31,13 +33,20 @@ namespace CppUtils {
             return key;
         }
 
-        void removeListener(int key) {
-            size_t numberOfElementsRemoved = listeners.erase(key);
-            assert(numberOfElementsRemoved == 1);
+        int addHighPriorityListener(const function &func) {
+            int key = listeners.begin()->first - 1;
+            listeners[key] = func;
+
+            return key;
+        }
+
+        bool removeListener(int key) {
+            return (bool)listeners.erase(key);
         }
 
         void executeAll(Args... args) {
-            for (auto iter = listeners.begin(); iter != listeners.end();) {
+            auto end = listeners.end();
+            for (auto iter = listeners.begin(); iter != end;) {
                 if (iter->second(args...) == DELETE_LISTENER) {
                     iter = listeners.erase(iter);
                 } else {
