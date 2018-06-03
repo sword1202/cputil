@@ -16,8 +16,8 @@ void SynchronizedCallbacksQueue::post(const Callback &callback) {
 
 void SynchronizedCallbacksQueue::process() {
     {
-        threadSafeCopy.assign(queue.begin(), queue.end());
         LOCK;
+        threadSafeCopy.assign(queue.begin(), queue.end());
     }
 
     for (const Callback& callback : threadSafeCopy) {
