@@ -18,6 +18,7 @@ namespace CppUtils {
         typedef std::function<void()> Callback;
     private:
         std::deque<Callback> queue;
+        std::vector<Callback> threadSafeCopy;
         std::mutex mutex;
     public:
         void post(const Callback &callback);

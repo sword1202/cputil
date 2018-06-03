@@ -15,20 +15,19 @@ void SynchronizedCallbacksQueue::post(const Callback &callback) {
 }
 
 void SynchronizedCallbacksQueue::process() {
-    
-    size_t size;
+    threadSafeCopy.clear();
     {
+        threadSafeCopy.insert(threadSafeCopy.end(), queue.begin(), queue.end());
         LOCK;
-        size = queue.size();
     }
 
-    for (int i = 0; i < size; ++i) {
-        queue[i]();
+    for (const Callback& callback : threadSafeCopy) {
+        callback();
     }
 
-    auto begin = queue.begin();
     {
         LOCK;
-        queue.erase(begin, begin + size);
+        auto begin = queue.begin();
+        queue.erase(begin, begin + threadSafeCopy.size());
     }
 }
