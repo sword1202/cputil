@@ -105,4 +105,6 @@ TEST_CASE("circle-line intersections test") {
     equals2 = intersection2.compareUsingEpsilon(point1, epsilon) || intersection2.compareUsingEpsilon(point2, epsilon);
     REQUIRE(equals1);
     REQUIRE(equals2);
+
+    REQUIRE(circle.getIntersectionsForArc(line, -epsilon, M_PI_4 + epsilon, &intersection1, &intersection2) == 1);
 }
