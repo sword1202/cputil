@@ -33,7 +33,7 @@ namespace CppUtils {
 
         bool getIntersection(const Line<T>& other, Point<T>* outIntersection) {
             return GeometryUtils::GetLinesIntersection(A.x, A.y, B.x, B.y, other.A.x,
-                    other.A.y, other.B.x, other.B.x, &outIntersection->x, outIntersection->y);
+                    other.A.y, other.B.x, other.B.x, &outIntersection->x, &outIntersection->y);
         }
 
         bool operator==(const Line<T> &rhs) const {

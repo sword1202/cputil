@@ -9,6 +9,7 @@
 #include "../GeometryUtils.h"
 #include "../Circle.h"
 #include "../Algorithms.h"
+#include "RoundedRect.h"
 
 constexpr float epsilon = 0.01;
 
@@ -107,4 +108,27 @@ TEST_CASE("circle-line intersections test") {
     REQUIRE(equals2);
 
     REQUIRE(circle.getIntersectionsForArc(line, -epsilon, M_PI_4 + epsilon, &intersection1, &intersection2) == 1);
+}
+
+TEST_CASE("roundrect-line intersections test") {
+    RoundedRectF rect(PointF(0, -7), 10, 7, 2);
+
+    LineF line(5, 2, 5, -9);
+
+    PointF intersection1;
+    PointF intersection2;
+    REQUIRE(rect.getIntersectionsWithLine(line, &intersection1, &intersection2) == 2);
+
+    bool equals1 = intersection1 == PointF(5, 0) || intersection1 == PointF(5, -7);
+    bool equals2 = intersection2 == PointF(5, 0) || intersection2 == PointF(5, -7);
+    REQUIRE(equals1);
+    REQUIRE(equals2);
+
+    line = LineF(6, 2, 12, -4);
+    REQUIRE(rect.getIntersectionsWithLine(line, &intersection1, &intersection2) == 2);
+
+    equals1 = intersection1 == PointF(8, 0) || intersection1 == PointF(10, -2);
+    equals2 = intersection2 == PointF(8, 0) || intersection2 == PointF(10, -2);
+    REQUIRE(equals1);
+    REQUIRE(equals2);
 }

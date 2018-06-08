@@ -34,7 +34,23 @@ namespace CppUtils {
             this->radius = radius;
         }
 
+        int getIntersectionsWithLine(const Line<Float>& line, Point<Float>* outPoint1, Point<Float>* outPoint2) {
+            std::array<Point<Float>, 2> intersections;
+            int count = getIntersectionsWithLine(line, &intersections);
+            if (count >= 1) {
+                *outPoint1 = intersections[0];
+
+                if (count >= 2) {
+                    *outPoint2 = intersections[1];
+                }
+            }
+
+            return count;
+        }
+
         int getIntersectionsWithLine(const Line<Float>& line, std::array<Point<Float>, 2>* intersections) {
+            assert("Not implemented yet" && false);
+
             int intersectionsCount = 0;
             std::array<Line<Float>, 4> lines;
             lines[0] = Line<Float>(A.x + radius, A.y, A.x + width - radius, A.y);
@@ -42,9 +58,10 @@ namespace CppUtils {
             lines[2] = Line<Float>(A.x, A.y + radius, A.x, A.y + height - radius);
             lines[3] = Line<Float>(A.x + width, A.y + radius, A.x + width, A.y + height - radius);
 
+            Point<Float> intersection;
             for (int i = 0; i < lines.size(); ++i) {
-                if (lines[i].intersects(line)) {
-                    intersections[intersectionsCount++] = lines[i];
+                if (lines[i].getIntersection(line, &intersection)) {
+                    (*intersections)[intersectionsCount++] = intersection;
 
                     if (intersectionsCount >= 2) {
                         return intersectionsCount;
@@ -58,7 +75,7 @@ namespace CppUtils {
             centers[2] = Point<Float>(A.x + radius, A.y + height - radius);
             centers[3] = Point<Float>(A.x + width - radius, A.y + height - radius);
 
-            std::array<std::array<Float, 2>, 4> angles = {{M_PI_2, M_PI}, {0.0, M_PI_2},
+            Float angles[4][2] = {{M_PI_2, M_PI}, {0, M_PI_2},
                     {M_PI, M_PI + M_PI_2}, {M_PI_2 + M_PI, 2 * M_PI}};
 
             for (int i = 0; i < centers.size(); ++i) {
