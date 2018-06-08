@@ -8,6 +8,9 @@
 
 #include <cmath>
 #include <limits>
+#include <array>
+
+#include "Point.h"
 
 namespace CppUtils {
     namespace GeometryUtils {

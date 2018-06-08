@@ -11,6 +11,11 @@ namespace Primitives {
         Float epsilon = std::numeric_limits<Float>::epsilon();
         return fabs(a - b) < epsilon;
     }
+
+    template<typename Float>
+    bool CompareFloatsUsingEpsilon(Float a, Float b, Float epsilon) {
+        return fabs(a - b) < epsilon;
+    }
 }
 }
 

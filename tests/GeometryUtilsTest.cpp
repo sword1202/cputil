@@ -7,8 +7,13 @@
 #endif
 #include "catch.hpp"
 #include "../GeometryUtils.h"
+#include "../Circle.h"
+#include "../Algorithms.h"
+
+constexpr float epsilon = 0.01;
 
 using namespace CppUtils::GeometryUtils;
+using namespace CppUtils;
 
 TEST_CASE("lines intersection test") {
 
@@ -57,4 +62,47 @@ TEST_CASE("lines intersection test") {
     REQUIRE(!intersects);
     REQUIRE(intersectionX == 0);
     REQUIRE(intersectionY == 0);
+}
+
+TEST_CASE("circle-line intersections test") {
+    CircleF circle(PointF(4, 0), 2);
+    LineF line(0, 0, 8, 0);
+
+    PointF intersection1;
+    PointF intersection2;
+    REQUIRE(circle.getIntersections(line, &intersection1, &intersection2) == 2);
+
+    bool equals1 = intersection1 == PointF(2, 0) || intersection1 == PointF(6, 0);
+    bool equals2 = intersection2 == PointF(2, 0) || intersection2 == PointF(6, 0);
+    REQUIRE(equals1);
+    REQUIRE(equals2);
+
+    line = LineF(0, -2, 8, -2);
+
+    REQUIRE(circle.getIntersections(line, &intersection1, &intersection2) == 1);
+
+    REQUIRE(intersection1 == PointF(4, -2));
+
+    line = LineF(1, -3, 7, 3);
+
+    REQUIRE(circle.getIntersections(line, &intersection1, &intersection2) == 2);
+
+    PointF point1 = circle.getPointForAngle(M_PI * 2 - M_PI_4);
+    PointF point2 = circle.getPointForAngle(M_PI_2 + M_PI_4);
+    equals1 = intersection1.compareUsingEpsilon(point1, epsilon) || intersection1.compareUsingEpsilon(point2, epsilon);
+    equals2 = intersection2.compareUsingEpsilon(point1, epsilon) || intersection2.compareUsingEpsilon(point2, epsilon);
+    REQUIRE(equals1);
+    REQUIRE(equals2);
+
+    line = LineF(2, -4, 8, 2);
+
+    // add some epsilon
+    REQUIRE(circle.getIntersectionsForArc(line, -epsilon, M_PI_2 + epsilon, &intersection1, &intersection2) == 2);
+
+    point1 = PointF(6, 0);
+    point2 = PointF(4, -2);
+    equals1 = intersection1.compareUsingEpsilon(point1, epsilon) || intersection1.compareUsingEpsilon(point2, epsilon);
+    equals2 = intersection2.compareUsingEpsilon(point1, epsilon) || intersection2.compareUsingEpsilon(point2, epsilon);
+    REQUIRE(equals1);
+    REQUIRE(equals2);
 }

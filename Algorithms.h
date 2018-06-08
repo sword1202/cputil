@@ -7,6 +7,8 @@
 
 #include <algorithm>
 #include "StlDebugUtils.h"
+#include <unordered_map>
+#include <array>
 
 namespace CppUtils {
     template<typename Iterator, typename Element>
@@ -51,6 +53,14 @@ namespace CppUtils {
                                                                     const Value& value) {
         return FindLessOrEqualInSortedCollection(collection, value, [&] (const Value& a, const Value& b) {
             return a < b;
+        });
+    }
+
+    template<typename Collection, typename Value, typename KeyProvider>
+    typename Collection::iterator FindLessOrEqualInSortedCollectionByKey(Collection& collection,
+            const Value& value, const KeyProvider& keyProvider) {
+        return FindLessOrEqualInSortedCollection(collection, value, [&] (const Value& a, const Value& b) {
+            return keyProvider(a) < keyProvider(b);
         });
     }
 
@@ -182,6 +192,12 @@ namespace CppUtils {
     }
 
     template<typename Collection, typename Predicate>
+    bool Contains(const Collection& collection, const Predicate& predicate) {
+        return Contains(collection.begin(), collection.end(), predicate);
+    }
+
+
+    template<typename Collection, typename Predicate>
     bool ContainsIndex(const Collection& collection, const Predicate& predicate) {
         for (int i = 0; i < collection.size(); ++i) {
             if (predicate(i)) {
@@ -191,6 +207,37 @@ namespace CppUtils {
 
         return false;
     }
-};
+
+    template <typename Map, typename Iter>
+    void FillCountingMap(Map* map, Iter begin, Iter end) {
+        std::for_each(begin, end, [=] (const auto& value) {
+            ++map[value];
+        });
+    };
+
+    template<typename Iter1, typename Iter2>
+    bool ContentEqualsAnyOrderUsingHash(Iter1 begin, Iter1 end, Iter2 begin2, Iter2 end2) {
+        std::unordered_map<decltype(*begin), int> map1;
+        std::unordered_map<decltype(*begin2), int> map2;
+
+        FillCountingMap(&map1, begin, end);
+        FillCountingMap(&map2, begin2, end2);
+
+        return std::all_of(map1.begin(), map1.end(), [&] (const auto& pair) {
+            return map2[pair.first] == pair.second;
+        });
+    }
+
+    template<typename Collection1, typename Collection2>
+    bool ContentEqualsAnyOrderUsingHash(const Collection1& collection1, const Collection2& collection2) {
+        return ContentEqualsAnyOrderUsingHash(collection1.begin(), collection1.end(),
+                collection2.begin(), collection2.end());
+    };
+
+    template<typename T1, int N>
+    bool ArrayEqualsAnyOrderUsingHash(const std::array<T1, N>& collection1, const std::array<T1, N>& collection2) {
+        return ContentEqualsAnyOrderUsingHash(collection1, collection2);
+    };
+}
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
