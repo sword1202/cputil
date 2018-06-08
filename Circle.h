@@ -8,7 +8,7 @@
 
 #include "Point.h"
 #include "Line.h"
-#import "Math.h"
+#import "MathUtils.h"
 #include <assert.h>
 #include <array>
 

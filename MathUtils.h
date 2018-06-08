@@ -6,7 +6,7 @@
 #ifndef VOCALTRAINER_MATH_H
 #define VOCALTRAINER_MATH_H
 
-#include <math.h>
+#include <cmath>
 
 namespace CppUtils {
 
