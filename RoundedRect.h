@@ -52,19 +52,15 @@ namespace CppUtils {
 
         int getIntersectionsWithLine(const Line<Float>& line, std::array<Point<Float>, 2>* intersections) {
             int intersectionsCount = 0;
-            std::array<Line<Float>, 4> lines;
-            lines[0] = Line<Float>(A.x + radius, A.y, A.x + width - radius, A.y);
-            lines[1] = Line<Float>(A.x + radius, A.y + height, A.x + width - radius, A.y + height);
-            lines[2] = Line<Float>(A.x, A.y + radius, A.x, A.y + height - radius);
-            lines[3] = Line<Float>(A.x + width, A.y + radius, A.x + width, A.y + height - radius);
+            std::array<LineSegment<Float>, 4> sides;
+            sides[0] = LineSegment<Float>(A.x + radius, A.y, A.x + width - radius, A.y);
+            sides[1] = LineSegment<Float>(A.x + radius, A.y + height, A.x + width - radius, A.y + height);
+            sides[2] = LineSegment<Float>(A.x, A.y + radius, A.x, A.y + height - radius);
+            sides[3] = LineSegment<Float>(A.x + width, A.y + radius, A.x + width, A.y + height - radius);
 
             Point<Float> intersection;
-            for (int i = 0; i < lines.size(); ++i) {
-                if (line.getIntersection(lines[i], &intersection)) {
-                    if (!Math::IsInClosedInterval(line.A.x, line.B.x, intersection.x)) {
-                        continue;
-                    }
-
+            for (int i = 0; i < sides.size(); ++i) {
+                if (line.getIntersection(sides[i], &intersection)) {
                     (*intersections)[intersectionsCount++] = intersection;
 
                     if (intersectionsCount >= 2) {

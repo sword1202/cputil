@@ -72,50 +72,56 @@ TEST_CASE("lines intersection test") {
     REQUIRE(intersection == PointF(5, -7));
 }
 
-TEST_CASE("circle-line intersections test") {
-    CircleF circle(PointF(4, 0), 2);
-    LineF line(0, 0, 8, 0);
+//TEST_CASE("circle-line intersections test") {
+//    CircleF circle(PointF(4, 0), 2);
+//    LineF line(0, 0, 8, 0);
+//
+//    PointF intersection1;
+//    PointF intersection2;
+//    REQUIRE(circle.getIntersections(line, &intersection1, &intersection2) == 2);
+//
+//    bool equals1 = intersection1 == PointF(2, 0) || intersection1 == PointF(6, 0);
+//    bool equals2 = intersection2 == PointF(2, 0) || intersection2 == PointF(6, 0);
+//    REQUIRE(equals1);
+//    REQUIRE(equals2);
+//
+//    line = LineF(0, -2, 8, -2);
+//
+//    REQUIRE(circle.getIntersections(line, &intersection1, &intersection2) == 1);
+//
+//    REQUIRE(intersection1 == PointF(4, -2));
+//
+//    line = LineF(1, -3, 7, 3);
+//
+//    REQUIRE(circle.getIntersections(line, &intersection1, &intersection2) == 2);
+//
+//    PointF point1 = circle.getPointForAngle(M_PI * 2 - M_PI_4);
+//    PointF point2 = circle.getPointForAngle(M_PI_2 + M_PI_4);
+//    equals1 = intersection1.compareUsingEpsilon(point1, epsilon) || intersection1.compareUsingEpsilon(point2, epsilon);
+//    equals2 = intersection2.compareUsingEpsilon(point1, epsilon) || intersection2.compareUsingEpsilon(point2, epsilon);
+//    REQUIRE(equals1);
+//    REQUIRE(equals2);
+//
+//    line = LineF(2, -4, 8, 2);
+//
+//    // add some epsilon
+//    REQUIRE(circle.getIntersectionsForArc(line, -epsilon + M_PI_2 * 3, M_PI * 2 + epsilon, &intersection1, &intersection2) == 2);
+//
+//    point1 = PointF(6, 0);
+//    point2 = PointF(4, -2);
+//    equals1 = intersection1.compareUsingEpsilon(point1, epsilon) || intersection1.compareUsingEpsilon(point2, epsilon);
+//    equals2 = intersection2.compareUsingEpsilon(point1, epsilon) || intersection2.compareUsingEpsilon(point2, epsilon);
+//    REQUIRE(equals1);
+//    REQUIRE(equals2);
+//
+//    REQUIRE(circle.getIntersectionsForArc(line, -epsilon, M_PI_4 + epsilon, &intersection1, &intersection2) == 1);
+//}
 
-    PointF intersection1;
-    PointF intersection2;
-    REQUIRE(circle.getIntersections(line, &intersection1, &intersection2) == 2);
-
-    bool equals1 = intersection1 == PointF(2, 0) || intersection1 == PointF(6, 0);
-    bool equals2 = intersection2 == PointF(2, 0) || intersection2 == PointF(6, 0);
-    REQUIRE(equals1);
-    REQUIRE(equals2);
-
-    line = LineF(0, -2, 8, -2);
-
-    REQUIRE(circle.getIntersections(line, &intersection1, &intersection2) == 1);
-
-    REQUIRE(intersection1 == PointF(4, -2));
-
-    line = LineF(1, -3, 7, 3);
-
-    REQUIRE(circle.getIntersections(line, &intersection1, &intersection2) == 2);
-
-    PointF point1 = circle.getPointForAngle(M_PI * 2 - M_PI_4);
-    PointF point2 = circle.getPointForAngle(M_PI_2 + M_PI_4);
-    equals1 = intersection1.compareUsingEpsilon(point1, epsilon) || intersection1.compareUsingEpsilon(point2, epsilon);
-    equals2 = intersection2.compareUsingEpsilon(point1, epsilon) || intersection2.compareUsingEpsilon(point2, epsilon);
-    REQUIRE(equals1);
-    REQUIRE(equals2);
-
-    line = LineF(2, -4, 8, 2);
-
-    // add some epsilon
-    REQUIRE(circle.getIntersectionsForArc(line, -epsilon + M_PI_2 * 3, M_PI * 2 + epsilon, &intersection1, &intersection2) == 2);
-
-    point1 = PointF(6, 0);
-    point2 = PointF(4, -2);
-    equals1 = intersection1.compareUsingEpsilon(point1, epsilon) || intersection1.compareUsingEpsilon(point2, epsilon);
-    equals2 = intersection2.compareUsingEpsilon(point1, epsilon) || intersection2.compareUsingEpsilon(point2, epsilon);
-    REQUIRE(equals1);
-    REQUIRE(equals2);
-
-    REQUIRE(circle.getIntersectionsForArc(line, -epsilon, M_PI_4 + epsilon, &intersection1, &intersection2) == 1);
-}
+//TEST_CASE("circle.getAngleFromPoint test") {
+//    PointF point(0.585786462f, -5.41421366f);
+//    CircleF circle = CircleF(PointF(2, -4), 2);
+//    REQUIRE(Primitives::CompareFloatsUsingEpsilon(circle.getAngleFromPoint(point), (float)M_PI_4 * 3.f, 0.01f));
+//}
 
 TEST_CASE("roundrect-line intersections test") {
     RoundedRectF rect(PointF(0, -7), 10, 7, 2);
@@ -136,6 +142,19 @@ TEST_CASE("roundrect-line intersections test") {
 
     equals1 = intersection1 == PointF(8, 0) || intersection1 == PointF(10, -2);
     equals2 = intersection2 == PointF(8, 0) || intersection2 == PointF(10, -2);
+    REQUIRE(equals1);
+    REQUIRE(equals2);
+
+    rect = RoundedRectF(PointF(0, -6), 6, 6, 2);
+    line = LineF(-1, -7, 7, 1);
+    
+    REQUIRE(rect.getIntersectionsWithLine(line, &intersection1, &intersection2) == 2);
+    PointF expectedPoint1 = CircleF(PointF(2, -4), 2).getPointForAngle(M_PI_4 * 3);
+    PointF expectedPoint2 = CircleF(PointF(4, -2), 2).getPointForAngle(M_PI_4 * 7);
+    equals1 = intersection1.compareUsingEpsilon(expectedPoint1, 0.01f) ||
+            intersection1.compareUsingEpsilon(expectedPoint2, 0.01f);
+    equals2 = intersection2.compareUsingEpsilon(expectedPoint1, 0.01f) ||
+              intersection2.compareUsingEpsilon(expectedPoint2, 0.01f);
     REQUIRE(equals1);
     REQUIRE(equals2);
 }

@@ -86,8 +86,7 @@ namespace CppUtils {
             for (int i = 0; i < tempCount; ++i) {
                 float angle = getAngleFromPoint(temp[i]);
                 if (Math::IsAngleBetweenAngles(angle, angleBegin, angleEnd)) {
-                    (*outPoints)[i] = temp[i];
-                    resultCount++;
+                    (*outPoints)[resultCount++] = temp[i];
                 }
             }
 
@@ -124,11 +123,11 @@ namespace CppUtils {
          * \/
          */
         Point<Float> getPointForAngle(Float angle) {
-            return Point<Float>(center.x + radius * cos(angle), -center.y - radius * sin(angle));
+            return Point<Float>(center.x + radius * cos(angle), center.y - radius * sin(angle));
         }
 
         Float getAngleFromPoint(const Point<Float>& point) {
-            return atan2(point.y + center.y, point.x - center.x);
+            return atan2(-point.y + center.y, point.x - center.x);
         }
 
         bool operator==(const Circle &rhs) const {
