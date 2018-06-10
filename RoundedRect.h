@@ -6,10 +6,11 @@
 #ifndef VOCALTRAINER_ROUNDEDRECT_H
 #define VOCALTRAINER_ROUNDEDRECT_H
 
-#import <assert.h>
+#import <cassert>
 #include "Point.h"
 #include "Line.h"
 #include "Circle.h"
+#include <array>
 
 namespace CppUtils {
 
@@ -35,6 +36,7 @@ namespace CppUtils {
         }
 
         int getIntersectionsWithLine(const Line<Float>& line, Point<Float>* outPoint1, Point<Float>* outPoint2) {
+            assert(outPoint1 && outPoint2);
             std::array<Point<Float>, 2> intersections;
             int count = getIntersectionsWithLine(line, &intersections);
             if (count >= 1) {
@@ -49,8 +51,6 @@ namespace CppUtils {
         }
 
         int getIntersectionsWithLine(const Line<Float>& line, std::array<Point<Float>, 2>* intersections) {
-            assert("Not implemented yet" && false);
-
             int intersectionsCount = 0;
             std::array<Line<Float>, 4> lines;
             lines[0] = Line<Float>(A.x + radius, A.y, A.x + width - radius, A.y);
@@ -60,7 +60,11 @@ namespace CppUtils {
 
             Point<Float> intersection;
             for (int i = 0; i < lines.size(); ++i) {
-                if (lines[i].getIntersection(line, &intersection)) {
+                if (line.getIntersection(lines[i], &intersection)) {
+                    if (!Math::IsInClosedInterval(line.A.x, line.B.x, intersection.x)) {
+                        continue;
+                    }
+
                     (*intersections)[intersectionsCount++] = intersection;
 
                     if (intersectionsCount >= 2) {
@@ -76,13 +80,20 @@ namespace CppUtils {
             centers[3] = Point<Float>(A.x + width - radius, A.y + height - radius);
 
             Float angles[4][2] = {{M_PI_2, M_PI}, {0, M_PI_2},
-                    {M_PI, M_PI + M_PI_2}, {M_PI_2 + M_PI, 2 * M_PI}};
+                                  {M_PI, M_PI + M_PI_2}, {M_PI_2 + M_PI, 2 * M_PI}};
 
             for (int i = 0; i < centers.size(); ++i) {
-                Circle circle(centers[i], radius);
+                Circle<Float> circle(centers[i], radius);
                 std::array<Point<Float>, 2> outPoints;
-                intersectionsCount += circle.getIntersectionsForArc(line, angles[i][0], angles[i][1], &outPoints);
-                std::copy(outPoints.begin(), outPoints.end(), intersections->end());
+                int tempIntersectionsCount = circle.getIntersectionsForArc(line, angles[i][0], angles[i][1], &outPoints);
+                assert(tempIntersectionsCount < 3);
+
+                for (int j = 0; j < tempIntersectionsCount; ++j) {
+                    (*intersections)[intersectionsCount++] = outPoints[j];
+                    if (intersectionsCount >= 2) {
+                        return intersectionsCount;
+                    }
+                }
 
                 if (intersectionsCount >= 2) {
                     return intersectionsCount;
@@ -94,9 +105,9 @@ namespace CppUtils {
 
         bool operator==(const RoundedRect &rhs) const {
             return radius == rhs.radius &&
-                    A == rhs.A &&
-                    width == rhs.width &&
-                    height == rhs.height;
+                   A == rhs.A &&
+                   width == rhs.width &&
+                   height == rhs.height;
         }
 
         bool operator!=(const RoundedRect &rhs) const {

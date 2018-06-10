@@ -84,8 +84,8 @@ namespace CppUtils {
             int tempCount = getIntersections(line, &temp);
             int resultCount = 0;
             for (int i = 0; i < tempCount; ++i) {
-                float angle = acos((temp[i].x - center.x) / radius);
-                if (Math::isAngleBetweenAngles(angle, angleBegin, angleEnd)) {
+                float angle = getAngleFromPoint(temp[i]);
+                if (Math::IsAngleBetweenAngles(angle, angleBegin, angleEnd)) {
                     (*outPoints)[i] = temp[i];
                     resultCount++;
                 }
@@ -125,6 +125,10 @@ namespace CppUtils {
          */
         Point<Float> getPointForAngle(Float angle) {
             return Point<Float>(center.x + radius * cos(angle), -center.y - radius * sin(angle));
+        }
+
+        Float getAngleFromPoint(const Point<Float>& point) {
+            return atan2(point.y + center.y, point.x - center.x);
         }
 
         bool operator==(const Circle &rhs) const {

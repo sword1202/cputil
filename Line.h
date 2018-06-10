@@ -26,14 +26,14 @@ namespace CppUtils {
         Line() {
         }
 
-        bool intersects(const Line<T>& other) {
+        bool intersects(const Line<T>& other) const {
             return GeometryUtils::GetLinesIntersection(A.x, A.y, B.x, B.y, other.A.x,
-                    other.A.y, other.B.x, other.B.x, nullptr, nullptr);
+                    other.A.y, other.B.x, other.B.y, nullptr, nullptr);
         }
 
-        bool getIntersection(const Line<T>& other, Point<T>* outIntersection) {
+        bool getIntersection(const Line<T>& other, Point<T>* outIntersection) const {
             return GeometryUtils::GetLinesIntersection(A.x, A.y, B.x, B.y, other.A.x,
-                    other.A.y, other.B.x, other.B.x, &outIntersection->x, &outIntersection->y);
+                    other.A.y, other.B.x, other.B.y, &outIntersection->x, &outIntersection->y);
         }
 
         bool operator==(const Line<T> &rhs) const {
