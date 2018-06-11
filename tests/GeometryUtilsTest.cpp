@@ -144,6 +144,20 @@ TEST_CASE("roundrect-line intersections test") {
     REQUIRE(equals1);
     REQUIRE(equals2);
 
+    LineSegmentF segment(5, 2, 5, -1);
+    rect.getIntersectionsWithLineSegment(segment, &intersection1, &intersection2);
+    equals1 = intersection1 == PointF(5, 0) || intersection1 == PointF(5, -1);
+    equals2 = intersection2 == PointF(5, 0) || intersection2 == PointF(5, -1);
+    REQUIRE(equals1);
+    REQUIRE(equals2);
+
+    segment = LineSegmentF(5, -9, 5, -3);
+    rect.getIntersectionsWithLineSegment(segment, &intersection1, &intersection2);
+    equals1 = intersection1 == PointF(5, -7) || intersection1 == PointF(5, -3);
+    equals2 = intersection2 == PointF(5, -7) || intersection2 == PointF(5, -3);
+    REQUIRE(equals1);
+    REQUIRE(equals2);
+
     rect = RoundedRectF(PointF(0, -6), 6, 6, 2);
     line = LineF(-1, -7, 7, 1);
     

@@ -63,19 +63,19 @@ namespace CppUtils {
             }
 
             if (count == 2) {
-                bool inside[] = {
+                bool contains[] = {
                         segment.containsPoint(intersections[0]),
                         segment.containsPoint(intersections[1])
                 };
 
-                if (!inside[0] && !inside[1]) {
+                if (!contains[0] && !contains[1]) {
                     return 0;
                 }
 
-                if (inside[0]) {
+                if (contains[0]) {
                     intersections[1] = LineSegment<Float>(intersections[0], intersections[1]).containsPoint(segment.A)
                                        ? segment.A : segment.B;
-                } else if(inside[1]) {
+                } else if(contains[1]) {
                     intersections[0] = LineSegment<Float>(intersections[0], intersections[1]).containsPoint(segment.A)
                                        ? segment.A : segment.B;
                 }
@@ -99,13 +99,25 @@ namespace CppUtils {
             return count;
         }
 
+        LineSegment<Float> getTopSide() {
+            return LineSegment<Float>(A.x + radius, A.y, A.x + width - radius, A.y);
+        }
+
+        LineSegment<Float> getBottomSide() {
+            return LineSegment<Float>(A.x + radius, A.y + height, A.x + width - radius, A.y + height);
+        }
+
+        LineSegment<Float> getLeftSide() {
+            return LineSegment<Float>(A.x, A.y + radius, A.x, A.y + height - radius);
+        }
+
+        LineSegment<Float> getRightSide() {
+            return LineSegment<Float>(A.x + width, A.y + radius, A.x + width, A.y + height - radius);
+        }
+
         int getIntersectionsWithLine(const Line<Float>& line, std::array<Point<Float>, 2>* intersections) {
             int intersectionsCount = 0;
-            std::array<LineSegment<Float>, 4> sides;
-            sides[0] = LineSegment<Float>(A.x + radius, A.y, A.x + width - radius, A.y);
-            sides[1] = LineSegment<Float>(A.x + radius, A.y + height, A.x + width - radius, A.y + height);
-            sides[2] = LineSegment<Float>(A.x, A.y + radius, A.x, A.y + height - radius);
-            sides[3] = LineSegment<Float>(A.x + width, A.y + radius, A.x + width, A.y + height - radius);
+            std::array<LineSegment<Float>, 4> sides = {getTopSide(), getBottomSide(), getLeftSide(), getRightSide()};
 
             Point<Float> intersection;
             for (int i = 0; i < sides.size(); ++i) {
