@@ -70,6 +70,8 @@ namespace CppUtils {
 
                 if (!contains[0] && !contains[1]) {
                     return 0;
+                } else if(contains[0] && contains[1]) {
+                    return 2;
                 }
 
                 if (contains[0]) {
