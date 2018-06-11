@@ -170,4 +170,29 @@ TEST_CASE("roundrect-line intersections test") {
               intersection2.compareUsingEpsilon(expectedPoint2, 0.01f);
     REQUIRE(equals1);
     REQUIRE(equals2);
+
+    segment = LineSegmentF(-1, -7, 7, 1);
+
+    REQUIRE(rect.getIntersectionsWithLineSegment(segment, &intersection1, &intersection2) == 2);
+    expectedPoint1 = CircleF(PointF(2, -4), 2).getPointForAngle(M_PI_4 * 3);
+    expectedPoint2 = CircleF(PointF(4, -2), 2).getPointForAngle(M_PI_4 * 7);
+    equals1 = intersection1.compareUsingEpsilon(expectedPoint1, 0.01f) ||
+              intersection1.compareUsingEpsilon(expectedPoint2, 0.01f);
+    equals2 = intersection2.compareUsingEpsilon(expectedPoint1, 0.01f) ||
+              intersection2.compareUsingEpsilon(expectedPoint2, 0.01f);
+    REQUIRE(equals1);
+    REQUIRE(equals2);
+
+    segment = LineSegmentF(-1, -7, 2, -4);
+
+    REQUIRE(rect.getIntersectionsWithLineSegment(segment, &intersection1, &intersection2) == 2);
+    expectedPoint1 = CircleF(PointF(2, -4), 2).getPointForAngle(M_PI_4 * 3);
+    expectedPoint2 = PointF(2, -4);
+
+    equals1 = intersection1.compareUsingEpsilon(expectedPoint1, 0.01f) ||
+              intersection1.compareUsingEpsilon(expectedPoint2, 0.01f);
+    equals2 = intersection2.compareUsingEpsilon(expectedPoint1, 0.01f) ||
+              intersection2.compareUsingEpsilon(expectedPoint2, 0.01f);
+    REQUIRE(equals1);
+    REQUIRE(equals2);
 }
