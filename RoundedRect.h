@@ -24,6 +24,7 @@ namespace CppUtils {
 
         RoundedRect(const Point<Float> &A, Float width, Float height, Float radius)
                 : radius(radius), A(A), width(width), height(height) {
+            assert(width >= radius * 2);
         }
 
         Float getRadius() const {
@@ -32,6 +33,7 @@ namespace CppUtils {
 
         void setRadius(Float radius) {
             assert(radius >= 0);
+            assert(width >= radius * 2);
             this->radius = radius;
         }
 
