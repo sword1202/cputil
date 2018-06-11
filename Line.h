@@ -96,6 +96,15 @@ namespace CppUtils {
         const Line<T>& asLine() const {
             return *reinterpret_cast<const Line<T>*>(this);
         }
+
+        bool operator==(const LineSegment &rhs) const {
+            return A == rhs.A &&
+                   B == rhs.B;
+        }
+
+        bool operator!=(const LineSegment &rhs) const {
+            return !(rhs == *this);
+        }
     };
 
     typedef Line<float> LineF;
