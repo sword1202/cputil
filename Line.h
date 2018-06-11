@@ -65,18 +65,18 @@ namespace CppUtils {
         LineSegment(T x1, T y1, T x2, T y2) : A(x1, y1), B(x2, y2) {}
         LineSegment() = default;
 
+        bool containsPoint(const Point<T> &point) const {
+            return Math::IsInClosedInterval(A.x, B.x, point.x) &&
+                   Math::IsInClosedInterval(A.y, B.y, point.y);
+        }
+
         bool getIntersection(const Line<T>& other, Point<T>* outIntersection) const {
-            return asLine().getIntersection(other, outIntersection) &&
-                           Math::IsInClosedInterval(A.x, B.x, outIntersection->x) &&
-                    Math::IsInClosedInterval(A.y, B.y, outIntersection->y);
+            return asLine().getIntersection(other, outIntersection) && containsPoint(*outIntersection);
         }
 
         bool getIntersection(const LineSegment<T>& other, Point<T>* outIntersection) const {
             return asLine().getIntersection(other.asLine(), outIntersection) &&
-                   Math::IsInClosedInterval(A.x, B.x, outIntersection->x) &&
-                   Math::IsInClosedInterval(A.y, B.y, outIntersection->y) &&
-                   Math::IsInClosedInterval(other.A.x, other.B.x, outIntersection->x) &&
-                   Math::IsInClosedInterval(other.A.y, other.B.y, outIntersection->y);
+                    containsPoint(*outIntersection) && other.containsPoint(*outIntersection);
         }
 
         bool intersects(const Line<T>& other) const {

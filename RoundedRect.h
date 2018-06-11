@@ -35,6 +35,55 @@ namespace CppUtils {
             this->radius = radius;
         }
 
+        int getIntersectionsWithLineSegment(const LineSegment<Float>& segment,
+                                            Point<Float>* outPoint1,
+                                            Point<Float>* outPoint2) {
+            std::array<Point<Float>, 2> intersections;
+            int count = getIntersectionsWithLineSegment(segment, &intersections);
+            *outPoint1 = intersections[0];
+            *outPoint2 = intersections[1];
+
+            return count;
+        }
+
+        int getIntersectionsWithLineSegment(const LineSegment<Float>& segment,
+                                            std::array<Point<Float>, 2>* outIntersections) {
+            std::array<Point<Float>, 2>& intersections = *outIntersections;
+            int count = getIntersectionsWithLine(segment.asLine(), outIntersections);
+            if (count == 1) {
+                if (segment.containsPoint(intersections[0])) {
+                    return 1;
+                }
+
+                return 0;
+            }
+
+            if (count == 0) {
+                return 0;
+            }
+
+            if (count == 2) {
+                bool inside[] = {
+                        segment.containsPoint(intersections[0]),
+                        segment.containsPoint(intersections[1])
+                };
+
+                if (!inside[0] && !inside[1]) {
+                    return 0;
+                }
+
+                if (inside[0]) {
+                    intersections[1] = LineSegment<Float>(intersections[0], intersections[1]).containsPoint(segment.A)
+                                       ? segment.A : segment.B;
+                } else if(inside[1]) {
+                    intersections[0] = LineSegment<Float>(intersections[0], intersections[1]).containsPoint(segment.A)
+                                       ? segment.A : segment.B;
+                }
+
+                return 2;
+            }
+        }
+
         int getIntersectionsWithLine(const Line<Float>& line, Point<Float>* outPoint1, Point<Float>* outPoint2) {
             assert(outPoint1 && outPoint2);
             std::array<Point<Float>, 2> intersections;
@@ -99,14 +148,14 @@ namespace CppUtils {
             return intersectionsCount;
         }
 
-        bool operator==(const RoundedRect &rhs) const {
+        bool operator==(const RoundedRect<Float> &rhs) const {
             return radius == rhs.radius &&
                    A == rhs.A &&
                    width == rhs.width &&
                    height == rhs.height;
         }
 
-        bool operator!=(const RoundedRect &rhs) const {
+        bool operator!=(const RoundedRect<Float> &rhs) const {
             return !(rhs == *this);
         }
     };

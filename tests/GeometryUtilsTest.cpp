@@ -68,7 +68,6 @@ TEST_CASE("lines intersection test") {
 
     PointF intersection;
     REQUIRE(line1.getIntersection(line2, &intersection));
-
     REQUIRE(intersection == PointF(5, -7));
 }
 
