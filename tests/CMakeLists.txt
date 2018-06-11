@@ -11,5 +11,5 @@ set(TEST_FILES GeometryUtilsTest.cpp catch.hpp
         ../GeometryUtils.h StringsTest.cpp
         ../RoundedRect.h
         ../Line.h
-        ../Strings.h AlgorithmsTest.cpp ../Algorithms.h)
-add_executable(Tests ${TEST_FILES})
+        ../Strings.h AlgorithmsTest.cpp ../Algorithms.h ../Rect.h)
+add_executable(Tests ${TEST_FILES} ../Rect.h)

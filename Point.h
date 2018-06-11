@@ -37,6 +37,14 @@ namespace CppUtils {
             return Primitives::CompareFloatsUsingEpsilon(x, other.x, epsilon)
                     && Primitives::CompareFloatsUsingEpsilon(y, other.y, epsilon);
         }
+
+        T sqrDistanceTo(const Point<T>& to) const {
+            return (to.x - x) * (to.x - x) + (to.y - y) * (to.y - y);
+        }
+
+        T distanceTo(const Point<T>& to) const {
+            return (T)sqrt(sqrDistanceTo(to));
+        }
     };
 
     typedef Point<float> PointF;

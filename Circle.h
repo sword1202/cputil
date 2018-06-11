@@ -130,6 +130,14 @@ namespace CppUtils {
             return atan2(-point.y + center.y, point.x - center.x);
         }
 
+        bool containsPoint(const Point<Float>& point) const {
+            return center.sqrDistanceTo(point) <= radius;
+        }
+
+        bool containsPoint(Float x, Float y) const {
+            return containsPoint(Point<Float>(x, y));
+        }
+
         bool operator==(const Circle &rhs) const {
             return radius == rhs.radius &&
                     center == rhs.center;
