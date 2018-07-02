@@ -26,6 +26,7 @@ namespace CppUtils {
         RoundedRect(const Point<Float> &A, Float width, Float height, Float radius)
                 : radius(radius), A(A), width(width), height(height) {
             assert(width >= radius * 2);
+            assert(height >= radius * 2);
         }
 
         Float getRadius() const {
@@ -34,13 +35,25 @@ namespace CppUtils {
 
         void setRadius(Float radius) {
             assert(radius >= 0);
-            assert(width >= radius * 2);
             this->radius = radius;
+        }
+
+        void validate() {
+            assert(width >= 0);
+            assert(height >= 0);
+
+            if (width < radius * 2) {
+                radius = width / 2;
+            }
+
+            if (height < radius * 2) {
+                radius = height / 2;
+            }
         }
 
         int getIntersectionsWithLineSegment(const LineSegment<Float>& segment,
                                             Point<Float>* outPoint1,
-                                            Point<Float>* outPoint2) {
+                                            Point<Float>* outPoint2) const {
             std::array<Point<Float>, 2> intersections;
             int count = getIntersectionsWithLineSegment(segment, &intersections);
             *outPoint1 = intersections[0];
@@ -49,8 +62,15 @@ namespace CppUtils {
             return count;
         }
 
+        int getIntersectionsWithLineSegment(const LineSegment<Float>& segment, std::vector<Point<Float>>* outIntersections) const {
+            std::array<Point<Float>, 2> intersections;
+            int count = getIntersectionsWithLineSegment(segment, &intersections);
+            std::copy(intersections.begin(), intersections.begin() + count, std::back_inserter(*outIntersections));
+            return count;
+        }
+
         int getIntersectionsWithLineSegment(const LineSegment<Float>& segment,
-                                            std::array<Point<Float>, 2>* outIntersections) {
+                                            std::array<Point<Float>, 2>* outIntersections) const {
             std::array<Point<Float>, 2>& intersections = *outIntersections;
             int count = getIntersectionsWithLine(segment.asLine(), outIntersections);
             if (count == 1) {
@@ -87,9 +107,11 @@ namespace CppUtils {
 
                 return 2;
             }
+
+            return 0;
         }
 
-        int getIntersectionsWithLine(const Line<Float>& line, Point<Float>* outPoint1, Point<Float>* outPoint2) {
+        int getIntersectionsWithLine(const Line<Float>& line, Point<Float>* outPoint1, Point<Float>* outPoint2) const {
             assert(outPoint1 && outPoint2);
             std::array<Point<Float>, 2> intersections;
             int count = getIntersectionsWithLine(line, &intersections);
@@ -104,23 +126,23 @@ namespace CppUtils {
             return count;
         }
 
-        LineSegment<Float> getTopSide() {
+        LineSegment<Float> getTopSide() const {
             return LineSegment<Float>(A.x + radius, A.y, A.x + width - radius, A.y);
         }
 
-        LineSegment<Float> getBottomSide() {
+        LineSegment<Float> getBottomSide() const {
             return LineSegment<Float>(A.x + radius, A.y + height, A.x + width - radius, A.y + height);
         }
 
-        LineSegment<Float> getLeftSide() {
+        LineSegment<Float> getLeftSide() const {
             return LineSegment<Float>(A.x, A.y + radius, A.x, A.y + height - radius);
         }
 
-        LineSegment<Float> getRightSide() {
+        LineSegment<Float> getRightSide() const {
             return LineSegment<Float>(A.x + width, A.y + radius, A.x + width, A.y + height - radius);
         }
 
-        int getIntersectionsWithLine(const Line<Float>& line, std::array<Point<Float>, 2>* intersections) {
+        int getIntersectionsWithLine(const Line<Float>& line, std::array<Point<Float>, 2>* intersections) const {
             int intersectionsCount = 0;
             std::array<LineSegment<Float>, 4> sides = {getTopSide(), getBottomSide(), getLeftSide(), getRightSide()};
 
