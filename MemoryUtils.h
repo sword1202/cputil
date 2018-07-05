@@ -6,7 +6,7 @@
 #ifndef VOCALTRAINER_MEMORY_H
 #define VOCALTRAINER_MEMORY_H
 
-#import <cstring>
+#include <cstring>
 
 namespace CppUtils {
     namespace Memory {
