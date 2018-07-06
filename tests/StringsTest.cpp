@@ -1,5 +1,5 @@
 
-#include "../Strings.h"
+#include "../StringUtils.h"
 #include "catch.hpp"
 
 using namespace CppUtils::Strings;

@@ -13,6 +13,19 @@
 
 namespace CppUtils {
     namespace Strings {
+#ifdef __OBJC__
+        template<typename StdString>
+        NSString* ToNSString(const StdString& str) {
+            return [NSString stringWithCString:str.data()
+                                      encoding:[NSString defaultCStringEncoding]];
+        }
+
+        inline NSString* ToNSString(const char* str) {
+            return [NSString stringWithCString:str
+                                      encoding:[NSString defaultCStringEncoding]];
+        }
+#endif
+
         template<typename Iter, typename Char>
         void JoinToStream(std::basic_ostream<Char>& stream, Iter begin, Iter end, const Char* separator) {
             if (begin != end) {

@@ -16,25 +16,27 @@ namespace CppUtils {
         DELETE_LISTENER
     };
 
-    constexpr int NullKey = std::numeric_limits<int>::min();
-
     template<typename... Args>
     class ListenersSet {
     public:
-        typedef std::function<ListenerAction(Args...)> function;
+        typedef std::function<ListenerAction(Args...)> Listener;
     private:
-        std::map<int, function> listeners;
-        int nextKey = 0;
+        std::map<int, Listener> listeners;
+        int nextKey = 1;
     public:
-        int addListener(const function &func) {
+        int addListener(const Listener &func) {
             int key = nextKey++;
             listeners[key] = func;
 
             return key;
         }
 
-        int addHighPriorityListener(const function &func) {
+        int addHighPriorityListener(const Listener &func) {
             int key = listeners.begin()->first - 1;
+            if (key == 0) {
+                key--;
+            }
+
             listeners[key] = func;
 
             return key;
