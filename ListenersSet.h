@@ -10,6 +10,17 @@
 #include <map>
 #include <numeric>
 
+#ifndef NDEBUG
+#include <thread>
+
+#define CPPUTILS_LISTENERS_SET_DEBUG_INIT if (threadId == std::thread::id()) { \
+    threadId = std::this_thread::get_id(); \
+} \
+assert(threadId == std::this_thread::get_id() && "Listeners were added or/and executed or/and removed from different threads");
+#else
+#define CPPUTILS_LISTENERS_SET_DEBUG_INIT
+#endif
+
 namespace CppUtils {
     enum ListenerAction {
         DONT_DELETE_LISTENER,
@@ -23,8 +34,13 @@ namespace CppUtils {
     private:
         std::map<int, Listener> listeners;
         int nextKey = 1;
+#ifndef NDEBUG
+        mutable std::thread::id threadId;
+#endif
     public:
         int addListener(const Listener &func) {
+            CPPUTILS_LISTENERS_SET_DEBUG_INIT
+
             int key = nextKey++;
             listeners[key] = func;
 
@@ -32,6 +48,7 @@ namespace CppUtils {
         }
 
         int addHighPriorityListener(const Listener &func) {
+            CPPUTILS_LISTENERS_SET_DEBUG_INIT
             int key = listeners.begin()->first - 1;
             if (key == 0) {
                 key--;
@@ -43,10 +60,13 @@ namespace CppUtils {
         }
 
         bool removeListener(int key) {
+            CPPUTILS_LISTENERS_SET_DEBUG_INIT
             return (bool)listeners.erase(key);
         }
 
         void executeAll(Args... args) {
+            CPPUTILS_LISTENERS_SET_DEBUG_INIT
+
             auto end = listeners.end();
             for (auto iter = listeners.begin(); iter != end;) {
                 if (iter->second(args...) == DELETE_LISTENER) {
@@ -58,11 +78,13 @@ namespace CppUtils {
         }
 
         bool hasListenersToExecute() const {
+            CPPUTILS_LISTENERS_SET_DEBUG_INIT
             return !listeners.empty();
         }
     };
-
 }
+
+#define CPPUTILS_DEFINE_LISNERS_SET()
 
 
 #endif //VOCALTRAINER_LISTENERSSET_H
