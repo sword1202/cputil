@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Semyon Tikhonenko on 5/4/18.
 // Copyright (c) 2018 Mac. All rights reserved.
 //
@@ -7,7 +7,12 @@
 #define VOCALTRAINER_EXECUTORS_H
 
 #include <assert.h>
+
+#ifdef _WIN32
+#include <functional>
+#else
 #import <functional>
+#endif
 
 namespace CppUtils {
 

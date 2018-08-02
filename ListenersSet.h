@@ -9,6 +9,7 @@
 #include <functional>
 #include <map>
 #include <numeric>
+#include "assert.h"
 
 #ifndef NDEBUG
 #include <thread>

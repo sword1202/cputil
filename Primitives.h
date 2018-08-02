@@ -1,8 +1,15 @@
-#ifndef CPP_UTILS_PRIMITIVES_H
+﻿#ifndef CPP_UTILS_PRIMITIVES_H
 #define CPP_UTILS_PRIMITIVES_H
 
-#import <limits>
-#import <cmath>
+#ifdef _WIN32
+ #include <limits>
+ #include <cmath>
+#else
+ #import <limits>
+ #import <cmath>
+#endif
+
+
 
 namespace CppUtils {
 namespace Primitives {

@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Semyon Tikhonenko on 6/8/18.
 // Copyright (c) 2018 Mac. All rights reserved.
 //
@@ -6,7 +6,12 @@
 #ifndef VOCALTRAINER_ROUNDEDRECT_H
 #define VOCALTRAINER_ROUNDEDRECT_H
 
+#ifdef _WIN32
+#include <cassert>
+#else
 #import <cassert>
+#endif
+
 #include "Point.h"
 #include "Line.h"
 #include "Circle.h"
