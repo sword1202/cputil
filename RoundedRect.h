@@ -6,11 +6,7 @@
 #ifndef VOCALTRAINER_ROUNDEDRECT_H
 #define VOCALTRAINER_ROUNDEDRECT_H
 
-#ifdef _WIN32
-#include <cassert>
-#else
-#import <cassert>
-#endif
+#include "assert.h"
 
 #include "Point.h"
 #include "Line.h"

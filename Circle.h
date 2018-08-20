@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Semyon Tikhonenko on 6/7/18.
 // Copyright (c) 2018 Mac. All rights reserved.
 //
@@ -8,7 +8,7 @@
 
 #include "Point.h"
 #include "Line.h"
-#import "MathUtils.h"
+#include "MathUtils.h"
 #include <assert.h>
 #include <array>
 

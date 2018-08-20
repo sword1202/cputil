@@ -8,11 +8,7 @@
 
 #include <assert.h>
 
-#ifdef _WIN32
 #include <functional>
-#else
-#import <functional>
-#endif
 
 namespace CppUtils {
 

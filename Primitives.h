@@ -1,14 +1,8 @@
 ﻿#ifndef CPP_UTILS_PRIMITIVES_H
 #define CPP_UTILS_PRIMITIVES_H
 
-#ifdef _WIN32
- #include <limits>
- #include <cmath>
-#else
- #import <limits>
- #import <cmath>
-#endif
-
+#include <limits>
+#include <cmath>
 
 
 namespace CppUtils {
