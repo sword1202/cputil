@@ -6,7 +6,7 @@
 #ifndef VOCALTRAINER_ROUNDEDRECT_H
 #define VOCALTRAINER_ROUNDEDRECT_H
 
-#include "assert.h"
+#include <assert.h>
 
 #include "Point.h"
 #include "Line.h"
