@@ -281,6 +281,12 @@ namespace CppUtils {
             return SplitIntegers(std::basic_string<Char>(string), begin, end, delimiter, success);
         }
 
+        template <typename String>
+        bool IsUpperCase(const String& string) {
+            return std::all_of(string.begin(), string.end(), [] (decltype(*string.begin()) ch) {
+                return std::isupper(ch);
+            });
+        }
     }
 }
 
