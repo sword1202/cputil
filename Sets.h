@@ -24,6 +24,16 @@ namespace CppUtils {
         void Difference(const Set& a, const Set& b, OutIterator outIterator) {
             std::set_difference(a.begin(), a.end(), b.begin(), b.end(), outIterator);
         }
+
+        template <typename Set>
+        auto FindOrDefault(const Set& set, decltype(*set.begin()) defaultValue) {
+            auto iter = set.find(defaultValue);
+            if (iter == set.end()) {
+                return defaultValue;
+            }
+
+            return *iter;
+        }
     }
 };
 

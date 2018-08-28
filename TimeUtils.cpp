@@ -17,5 +17,14 @@ namespace TimeUtils {
     double NowInSeconds() {
         return NowInMicroseconds() / 1000000.0;
     }
+
+    ExecuteTimeLoggerGuard::ExecuteTimeLoggerGuard(const char* label, std::ostream& os) : os(os) {
+        this->label = label;
+        LogExecutionTimeStart(label);
+    }
+
+    ExecuteTimeLoggerGuard::~ExecuteTimeLoggerGuard() {
+        LogExecutionTimeEnd(label.data(), os);
+    }
 }
 }

@@ -31,6 +31,7 @@
     }
 
 namespace CppUtils {
+    inline void HashCombine(std::size_t& seed) {}
 
     template<typename T, typename... Rest>
     inline void HashCombine(std::size_t &seed, const T &v, Rest... rest) {
