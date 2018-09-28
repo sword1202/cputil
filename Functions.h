@@ -11,10 +11,10 @@
 
 namespace CppUtils {
     namespace Functions {
-        template<typename FuncCollection>
-        void ExecuteAll(const FuncCollection &collection) {
+        template<typename FuncCollection, typename... Args>
+        void ExecuteAll(const FuncCollection &collection, Args... args) {
             for (const auto &func : collection) {
-                func();
+                func(args...);
             }
         }
 

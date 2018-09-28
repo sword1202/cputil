@@ -78,6 +78,10 @@ namespace CppUtils {
             }
         }
 
+        void operator()(Args... args) {
+            executeAll(args...);
+        }
+
         bool hasListenersToExecute() const {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
             return !listeners.empty();
