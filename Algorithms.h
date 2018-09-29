@@ -238,6 +238,17 @@ namespace CppUtils {
     bool ArrayEqualsAnyOrderUsingHash(const std::array<T1, N>& collection1, const std::array<T1, N>& collection2) {
         return ContentEqualsAnyOrderUsingHash(collection1, collection2);
     };
+
+    template<typename To, typename From, typename Function>
+    To Transform(const From& from, const Function& func) {
+        To to;
+        auto iter = std::back_inserter(to);
+        for (const auto& value : from) {
+            *iter++ = func(value);
+        }
+
+        return to;
+    }
 }
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
