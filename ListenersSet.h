@@ -48,6 +48,22 @@ namespace CppUtils {
             return key;
         }
 
+        template <typename Function>
+        int addListener(const Function& func) {
+            return addListener(Listener([=] (Args... args) -> ListenerAction {
+                func(args...);
+                return DONT_DELETE_LISTENER;
+            }));
+        }
+
+        template <typename Function>
+        int addOneShotListener(const Function& func) {
+            return addListener(Listener([=] (Args... args) -> ListenerAction {
+                func(args...);
+                return DELETE_LISTENER;
+            }));
+        }
+
         int addHighPriorityListener(const Listener &func) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
             int key = listeners.begin()->first - 1;
