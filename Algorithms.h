@@ -271,6 +271,16 @@ namespace CppUtils {
             return abs(value);
         });
     }
+
+    template<typename Result, typename T>
+    Result AbsoluteAverage(const T* data, int size) {
+        return AbsoluteSum<Result>(data, size) / (Result)size;
+    }
+
+    template<typename Result, typename T>
+    Result Average(const T* data, int size) {
+        return Sum<Result>(data, size) / (Result)size;
+    }
 }
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
