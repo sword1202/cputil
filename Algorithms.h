@@ -9,6 +9,7 @@
 #include "StlDebugUtils.h"
 #include <unordered_map>
 #include <array>
+#include <numeric>
 
 namespace CppUtils {
     template<typename Iterator, typename Element>
@@ -248,6 +249,27 @@ namespace CppUtils {
         }
 
         return to;
+    }
+
+    template<typename T, typename Result = T>
+    Result Sum(const T* data, int size) {
+        return std::accumulate(data, data + size, Result());
+    }
+
+    template<typename Result, typename T, typename Transformer>
+    Result Sum(const T* data, int size, const Transformer& transformer, Result initialValue = Result()) {
+        for (int i = 0; i < size; ++i) {
+            initialValue += transformer(data[i]);
+        }
+
+        return initialValue;
+    }
+
+    template<typename Result, typename T>
+    Result AbsoluteSum(const T* data, int size) {
+        return Sum<Result>(data, size, [] (T value) {
+            return abs(value);
+        });
     }
 }
 
