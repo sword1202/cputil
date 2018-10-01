@@ -8,15 +8,15 @@
 
 
 #include <cstdint>
-#include "config.h"
 #include <iostream>
 #include <unordered_map>
 #include <string>
 
 namespace CppUtils {
 namespace TimeUtils {
-	CPP_UTILS_DLLHIDE int64_t NowInMicroseconds();
-	CPP_UTILS_DLLHIDE double NowInSeconds();
+	int64_t NowInMicroseconds();
+	std::string NowInMicrosecondsInPrettyFormat();
+	double NowInSeconds();
 
 	template <typename Func, typename Stream = std::ostream>
 	void LogExecutionTime(const char* label, Func func, Stream& os = std::cout) {

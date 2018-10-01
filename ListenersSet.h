@@ -39,7 +39,7 @@ namespace CppUtils {
         mutable std::thread::id threadId;
 #endif
     public:
-        int addListener(const Listener &func) {
+        int addListenerWithAction(const Listener &func) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
 
             int key = nextKey++;
@@ -50,7 +50,7 @@ namespace CppUtils {
 
         template <typename Function>
         int addListener(const Function& func) {
-            return addListener(Listener([=] (Args... args) -> ListenerAction {
+            return addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
                 func(args...);
                 return DONT_DELETE_LISTENER;
             }));
@@ -58,7 +58,7 @@ namespace CppUtils {
 
         template <typename Function>
         int addOneShotListener(const Function& func) {
-            return addListener(Listener([=] (Args... args) -> ListenerAction {
+            return addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
                 func(args...);
                 return DELETE_LISTENER;
             }));

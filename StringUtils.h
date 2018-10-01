@@ -287,6 +287,27 @@ namespace CppUtils {
                 return std::isupper(ch);
             });
         }
+
+        template <typename Char>
+        void Append(std::basic_stringstream<Char>& stream) {}
+
+        template <typename Char, typename Arg, typename... Args>
+        void Append(std::basic_stringstream<Char>& stream, const Arg& arg, Args... args) {
+            stream<<arg;
+            Append(stream, args...);
+        }
+
+        template <typename Char, typename... Args>
+        std::basic_string<Char> ToString(Args... args) {
+            std::basic_stringstream<Char> stream;
+            Append(stream, args...);
+            return stream.str();
+        }
+
+        template <typename... Args>
+        std::string ToString(Args... args) {
+            return ToString<char>(args...);
+        }
     }
 }
 
