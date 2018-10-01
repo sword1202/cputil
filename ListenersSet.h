@@ -10,14 +10,18 @@
 #include <map>
 #include <numeric>
 #include "assert.h"
+#include <mutex>
+#include "Maps.h"
 
 #ifndef NDEBUG
 #include <thread>
+#include <type_traits>
 
 #define CPPUTILS_LISTENERS_SET_DEBUG_INIT if (threadId == std::thread::id()) { \
     threadId = std::this_thread::get_id(); \
 } \
-assert(threadId == std::this_thread::get_id() && "Listeners were added or/and executed or/and removed from different threads");
+if (std::is_same<Mutex, DummyMutex>::value) \
+    assert(threadId == std::this_thread::get_id() && "Listeners were added or/and executed or/and removed from different threads");
 #else
 #define CPPUTILS_LISTENERS_SET_DEBUG_INIT
 #endif
@@ -28,12 +32,19 @@ namespace CppUtils {
         DELETE_LISTENER
     };
 
-    template<typename... Args>
-    class ListenersSet {
+    struct DummyMutex {
+        inline void lock() {}
+        inline void unlock() {}
+    };
+
+    template<typename Mutex, typename... Args>
+    class BaseListenersSet {
     public:
         typedef std::function<ListenerAction(Args...)> Listener;
     private:
-        std::map<int, Listener> listeners;
+        typedef std::map<int, Listener> Map;
+        Mutex mutex;
+        Map listeners;
         int nextKey = 1;
 #ifndef NDEBUG
         mutable std::thread::id threadId;
@@ -42,8 +53,12 @@ namespace CppUtils {
         int addListenerWithAction(const Listener &func) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
 
-            int key = nextKey++;
-            listeners[key] = func;
+            int key;
+            {
+                std::lock_guard<Mutex> _(mutex);
+                key = nextKey++;
+                listeners[key] = func;
+            }
 
             return key;
         }
@@ -64,32 +79,41 @@ namespace CppUtils {
             }));
         }
 
-        int addHighPriorityListener(const Listener &func) {
-            CPPUTILS_LISTENERS_SET_DEBUG_INIT
-            int key = listeners.begin()->first - 1;
-            if (key == 0) {
-                key--;
-            }
-
-            listeners[key] = func;
-
-            return key;
-        }
-
         bool removeListener(int key) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
+            std::lock_guard<Mutex> _(mutex);
             return (bool)listeners.erase(key);
         }
 
         void executeAll(Args... args) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
 
-            auto end = listeners.end();
-            for (auto iter = listeners.begin(); iter != end;) {
-                if (iter->second(args...) == DELETE_LISTENER) {
-                    iter = listeners.erase(iter);
-                } else {
-                    ++iter;
+            if (std::is_same<Mutex, DummyMutex>::value) {
+                auto end = listeners.end();
+                for (auto iter = listeners.begin(); iter != end;) {
+                    if (iter->second(args...) == DELETE_LISTENER) {
+                        iter = listeners.erase(iter);
+                    } else {
+                        ++iter;
+                    }
+                }
+            } else {
+                std::vector<std::pair<int, Listener>> temp;
+                {
+                    std::lock_guard<Mutex> _(mutex);
+                    temp.assign(listeners.begin(), listeners.end());
+                };
+
+                std::vector<int> scheduledForDelete;
+                for (const auto& pair : temp) {
+                    if (pair.second(args...) == DELETE_LISTENER) {
+                        scheduledForDelete.push_back(pair.first);
+                    }
+                }
+
+                std::lock_guard<Mutex> _(mutex);
+                for (int key : scheduledForDelete) {
+                    listeners.erase(key);
                 }
             }
         }
@@ -100,9 +124,16 @@ namespace CppUtils {
 
         bool hasListenersToExecute() const {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
+            std::lock_guard<Mutex> _(mutex);
             return !listeners.empty();
         }
     };
+
+    template <typename... Args>
+    using ListenersSet = BaseListenersSet<DummyMutex, Args...>;
+
+    template <typename... Args>
+    using SynchronizedListenersSet = BaseListenersSet<std::mutex, Args...>;
 }
 
 #define CPPUTILS_DEFINE_LISNERS_SET()
