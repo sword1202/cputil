@@ -64,7 +64,7 @@ namespace CppUtils {
         }
 
         template <typename Function>
-        int addListener(Function func) {
+        int addListener(const Function& func) {
             return addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
                 func(args...);
                 return DONT_DELETE_LISTENER;
@@ -80,7 +80,7 @@ namespace CppUtils {
         }
 
         template <typename Function>
-        int addOneShotListener(Function func) {
+        int addOneShotListener(const Function& func) {
             return addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
                 func(args...);
                 return DELETE_LISTENER;
