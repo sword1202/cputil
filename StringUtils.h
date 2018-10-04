@@ -192,6 +192,17 @@ namespace CppUtils {
         }
 
         template<typename Char>
+        void WriteToFile(const char* filePath, const Char* data, int size) {
+            std::basic_fstream<Char> file = Streams::OpenFile(filePath, std::ios::out);
+            file.write(data, size);
+        }
+
+        template<typename String>
+        void WriteStringToFile(const char* filePath, const String& string) {
+            WriteToFile(filePath, string.data(), string.size());
+        }
+
+        template<typename Char>
         std::basic_string<Char> ReadUntilTokenOrEof(std::basic_istream<Char>& is, const Char* token) {
             std::string result;
             Char ch;
@@ -307,6 +318,11 @@ namespace CppUtils {
         template <typename... Args>
         std::string ToString(Args... args) {
             return ToString<char>(args...);
+        }
+
+        template<typename Char>
+        std::basic_string<Char> FromVector(const std::vector<Char>& vec) {
+            return std::basic_string<Char>(vec.begin(), vec.end());
         }
     }
 }
