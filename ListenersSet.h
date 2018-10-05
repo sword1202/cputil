@@ -42,7 +42,7 @@ namespace CppUtils {
     public:
         typedef std::function<ListenerAction(Args...)> Listener;
     private:
-        typedef std::map<int, Listener> Map;
+        typedef std::map<int64_t, Listener> Map;
         Mutex mutex;
         Map listeners;
         int nextKey = 1;
@@ -100,6 +100,20 @@ namespace CppUtils {
             std::lock_guard<Mutex> _(mutex);
             return (bool)listeners.erase(key);
         }
+
+        bool removeListener(void* functionalObjectPointer) {
+            CPPUTILS_LISTENERS_SET_DEBUG_INIT
+            std::lock_guard<Mutex> _(mutex);
+            return (bool)listeners.erase((int64_t&)functionalObjectPointer);
+        }
+
+        template<typename Arg, typename... Args2>
+        void removeListeners(Arg arg, Args2... args) {
+            removeListener(arg);
+            removeListeners(args...);
+        }
+
+        void removeListeners() {}
 
         void executeAll(Args... args) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
