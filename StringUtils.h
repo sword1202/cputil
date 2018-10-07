@@ -5,6 +5,9 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <iterator>
+#include <algorithm>
+
 #include "Streams.h"
 
 #ifdef __OBJC__

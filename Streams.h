@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <cstring>
 
 namespace CppUtils {
     namespace Streams {
@@ -11,7 +12,7 @@ namespace CppUtils {
             std::basic_fstream<Char> file(filePath, openmode);
             if (!file.is_open()) {
                 std::stringstream error;
-                error<<"Unable to open file "<<filePath<<": "<< strerror(errno);
+                error << "Unable to open file " << filePath << ": " << strerror(errno);
                 throw std::runtime_error(error.str());
             }
 
