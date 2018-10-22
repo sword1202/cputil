@@ -6,6 +6,8 @@
 #ifndef VOCALTRAINER_SETS_H
 #define VOCALTRAINER_SETS_H
 
+#include <algorithm>
+
 namespace CppUtils {
     namespace Sets {
         template <typename Set>
