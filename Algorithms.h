@@ -251,6 +251,16 @@ namespace CppUtils {
         return to;
     }
 
+    template<typename To, typename From, typename Function>
+    void Transform(const From& from, To* to, const Function& func) {
+        auto iter = std::back_inserter(*to);
+        for (const auto& value : from) {
+            *iter++ = func(value);
+        }
+
+        return to;
+    }
+
     template<typename T, typename Result = T>
     Result Sum(const T* data, int size) {
         return std::accumulate(data, data + size, Result());
