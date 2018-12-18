@@ -42,9 +42,10 @@ namespace CppUtils {
     public:
         typedef std::function<ListenerAction(Args...)> Listener;
     private:
-        typedef std::map<int64_t, Listener> Map;
+        typedef std::map<int, Listener> Map;
         Mutex mutex;
         Map listeners;
+        std::map<void*, int> functionPointerListenersMap;
         int nextKey = 1;
 #ifndef NDEBUG
         mutable std::thread::id threadId;
@@ -73,10 +74,14 @@ namespace CppUtils {
 
         template <typename Function>
         int addListener(Function* func) {
-            return addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
+            int key = addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
                 (*func)(args...);
                 return DONT_DELETE_LISTENER;
             }));
+
+            std::lock_guard<Mutex> _(mutex);
+            functionPointerListenersMap[func] = key;
+            return key;
         }
 
         template <typename Function>
@@ -89,10 +94,14 @@ namespace CppUtils {
 
         template <typename Function>
         int addOneShotListener(Function* func) {
-            return addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
+            int key = addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
                 (*func)(args...);
                 return DELETE_LISTENER;
             }));
+
+            std::lock_guard<Mutex> _(mutex);
+            functionPointerListenersMap[func] = key;
+            return key;
         }
 
         bool removeListener(int key) {
@@ -104,7 +113,14 @@ namespace CppUtils {
         bool removeListener(void* functionalObjectPointer) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
             std::lock_guard<Mutex> _(mutex);
-            return (bool)listeners.erase((int64_t&)functionalObjectPointer);
+            auto iter = functionPointerListenersMap.find(functionalObjectPointer);
+            if (iter == functionPointerListenersMap.end()) {
+                return false;
+            }
+
+            int key = iter->second;
+            functionPointerListenersMap.erase(iter);
+            return (bool)listeners.erase(key);
         }
 
         template<typename Arg, typename... Args2>
