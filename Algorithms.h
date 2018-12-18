@@ -50,6 +50,17 @@ namespace CppUtils {
     }
 
     template<typename Collection, typename Value>
+    typename Collection::const_iterator FindLessInSortedCollection(const Collection& collection,
+                                                             const Value& value) {
+        auto iter = std::upper_bound(collection.begin(), collection.end(), value);
+        if(iter == collection.begin() || collection.begin() == collection.end()) {
+            return collection.end();
+        }
+
+        return --iter;
+    }
+
+    template<typename Collection, typename Value>
     typename Collection::iterator FindLessOrEqualInSortedCollection(Collection& collection,
                                                                     const Value& value) {
         return FindLessOrEqualInSortedCollection(collection, value, [&] (const Value& a, const Value& b) {
