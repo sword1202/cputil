@@ -302,6 +302,20 @@ namespace CppUtils {
     Result Average(const T* data, int size) {
         return Sum<Result>(data, size) / (Result)size;
     }
+
+    template <typename Collection>
+    void EraseRange(Collection& collection, int begin, int excludedEnd) {
+        assert(begin <= excludedEnd);
+        auto iterBegin = collection.begin() + begin;
+        auto iterEnd = collection.begin() + excludedEnd;
+        collection.erase(iterBegin, iterEnd);
+    }
+
+    template <typename Collection>
+    void EraseEndingOfCollection(Collection &collection, int begin) {
+        int end = collection.size();
+        EraseRange(collection, begin, end);
+    }
 }
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
