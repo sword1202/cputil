@@ -7,6 +7,8 @@
 
 #include <type_traits>
 
+// This type is a variant. It can hold a pointer to already allocated storage
+// (also pointer to type allocated in a stack) or allocate its own storage
 template<typename T>
 class PointerOrObject {
     T* value = nullptr;
