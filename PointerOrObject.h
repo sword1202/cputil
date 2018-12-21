@@ -18,7 +18,7 @@ public:
         isObject = false;
     }
 
-    explicit PointerOrObject(const T *value) : value(const_cast<PointerOrObject*>(value)) {
+    explicit PointerOrObject(T *value) : value(value) {
         isObject = false;
     }
 
@@ -71,7 +71,6 @@ public:
             isObject = true;
         }
 
-        assert(isObject && "only objects can use non const * operator");
         return *value;
     }
 
