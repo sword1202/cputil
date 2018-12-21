@@ -316,6 +316,31 @@ namespace CppUtils {
         int end = collection.size();
         EraseRange(collection, begin, end);
     }
+
+
+    template <typename Collection, typename Value>
+    std::pair<typename Collection::const_iterator, typename Collection::const_iterator>
+            FindRangeInSortedCollection(const Collection& collection, const Value& a, const Value& b) {
+        auto begin = std::lower_bound(collection.begin(), collection.end(), a);
+        auto end = std::upper_bound(collection.begin(), collection.end(), b);
+
+        if (end - begin <= 0) {
+            return std::make_pair(collection.end(), collection.end());
+        }
+
+        return std::make_pair(begin, end);
+    }
+
+    template <typename Collection, typename Value>
+    void GetItemsInRangeInSortedCollection(
+            const Collection& collection,
+            const Value& a,
+            const Value& b,
+            std::vector<Value>* out) {
+        auto itersRange = FindRangeInSortedCollection(collection, a, b);
+        out->resize(itersRange.second - itersRange.first);
+        std::copy(itersRange.first, itersRange.second, out->begin());
+    }
 }
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
