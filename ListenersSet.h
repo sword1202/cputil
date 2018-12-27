@@ -27,6 +27,13 @@ if (std::is_same<Mutex, DummyMutex>::value) \
 #define CPPUTILS_LISTENERS_SET_DEBUG_INIT
 #endif
 
+#define CPPUTILS_LISTENERS_SET_DEBUG_INIT_EXECUTE_ALL if (threadId == std::thread::id()) { \
+    threadId = std::this_thread::get_id(); \
+} \
+if (std::is_same<Mutex, DummyMutex>::value) \
+    assert(threadId == std::this_thread::get_id() && "Listeners were added or/and executed or/and removed from different threads"); \
+    else { assert(threadId == std::this_thread::get_id() && "Execute all should be executed from the same thread"); }
+
 namespace CppUtils {
     enum ListenerAction {
         DONT_DELETE_LISTENER,
@@ -48,6 +55,9 @@ namespace CppUtils {
         Map listeners;
         std::map<void*, int> functionPointerListenersMap;
         int nextKey = 1;
+        // When there is no synchronization these values are not used
+        std::vector<std::pair<int, Listener>> temp;
+        std::vector<int> scheduledForDelete;
 #ifndef NDEBUG
         mutable std::thread::id threadId;
 
@@ -76,6 +86,13 @@ namespace CppUtils {
         }
 
     public:
+        BaseListenersSet() {
+            if (!std::is_same<DummyMutex, Mutex>::value) {
+                temp.reserve(50);
+                scheduledForDelete.reserve(10);
+            }
+        }
+
         int addListenerWithAction(const Listener &func) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
 
@@ -145,7 +162,7 @@ namespace CppUtils {
         void removeListeners() {}
 
         void executeAll(Args... args) {
-            CPPUTILS_LISTENERS_SET_DEBUG_INIT
+            CPPUTILS_LISTENERS_SET_DEBUG_INIT_EXECUTE_ALL
 
             if (std::is_same<Mutex, DummyMutex>::value) {
                 auto end = listeners.end();
@@ -157,13 +174,12 @@ namespace CppUtils {
                     }
                 }
             } else {
-                std::vector<std::pair<int, Listener>> temp;
                 {
                     std::lock_guard<Mutex> _(mutex);
                     temp.assign(listeners.begin(), listeners.end());
                 };
 
-                std::vector<int> scheduledForDelete;
+                scheduledForDelete.clear();
                 for (const auto& pair : temp) {
                     if (pair.second(args...) == DELETE_LISTENER) {
                         scheduledForDelete.push_back(pair.first);

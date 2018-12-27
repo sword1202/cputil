@@ -13,5 +13,5 @@ set(TEST_FILES GeometryUtilsTest.cpp catch.hpp
         ../Line.h
         ../StringUtils.h AlgorithmsTest.cpp ../Algorithms.h ../Rect.h
         PointerOrObjectTests.cpp
-        ListenersSetTests.cpp)
+        ListenersSetTests.cpp ListenersSetTests.h)
 add_executable(Tests ${TEST_FILES} ../Rect.h)
