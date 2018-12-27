@@ -34,7 +34,7 @@ static void changeStr(std::string& str) {
     str = "lalala";
 }
 
-TEST_CASE("test 2") {
+TEST_CASE("test 3") {
     PointerOrObject<std::string> o;
     changeStr(*o);
     REQUIRE(*o == "lalala");

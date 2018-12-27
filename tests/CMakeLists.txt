@@ -11,5 +11,7 @@ set(TEST_FILES GeometryUtilsTest.cpp catch.hpp
         ../GeometryUtils.h StringsTest.cpp
         ../RoundedRect.h
         ../Line.h
-        ../Strings.h AlgorithmsTest.cpp ../Algorithms.h ../Rect.h)
+        ../StringUtils.h AlgorithmsTest.cpp ../Algorithms.h ../Rect.h
+        PointerOrObjectTests.cpp
+        ListenersSetTests.cpp)
 add_executable(Tests ${TEST_FILES} ../Rect.h)
