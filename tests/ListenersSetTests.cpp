@@ -42,7 +42,6 @@ TEST_CASE("function pointer listener executed") {
 }
 
 TEST_CASE("execution order preserved test") {
-    int value = 1;
     std::string result;
     CppUtils::ListenersSet<> listenersSet;
     listenersSet.addListener([&] {
@@ -64,4 +63,45 @@ TEST_CASE("execution order preserved test") {
     listenersSet.addListener(&e);
     listenersSet.executeAll();
     REQUIRE(result == "abcde");
+}
+
+TEST_CASE("execution order with removals preserved test") {
+    std::string result;
+    CppUtils::ListenersSet<> listenersSet;
+    listenersSet.addListener([&] {
+        result.push_back('a');
+    });
+    int b = listenersSet.addListener([&] {
+        result.push_back('b');
+    });
+    auto c = [&] {
+        result.push_back('c');
+    };
+    listenersSet.addListener(&c);
+    listenersSet.addListener([&] {
+        result.push_back('d');
+    });
+    auto e = [&] {
+        result.push_back('e');
+    };
+    listenersSet.addListener(&e);
+    auto f = [&] {
+        result.push_back('f');
+    };
+    listenersSet.addListener(&f);
+
+    listenersSet.executeAll();
+    REQUIRE(result == "abcdef");
+    result.clear();
+    listenersSet.removeListener(&c);
+    listenersSet.executeAll();
+    REQUIRE(result == "abdef");
+    result.clear();
+    listenersSet.removeListener(&f);
+    listenersSet.executeAll();
+    REQUIRE(result == "abde");
+    result.clear();
+    listenersSet.removeListener(b);
+    listenersSet.executeAll();
+    REQUIRE(result == "ade");
 }
