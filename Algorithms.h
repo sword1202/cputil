@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <array>
 #include <numeric>
+#include <lber.h>
 
 namespace CppUtils {
     template<typename Iterator, typename Element>
@@ -201,6 +202,13 @@ namespace CppUtils {
         }
 
         return false;
+    }
+
+    template<typename Collection>
+    bool ContainsValue(const Collection& collection, const typename Collection::value_type& value) {
+        return Contains(collection.begin(), collection.end(), [&] (const auto& v) {
+            return value == v;
+        });
     }
 
     template<typename Collection, typename Predicate>

@@ -105,3 +105,15 @@ TEST_CASE("execution order with removals preserved test") {
     listenersSet.executeAll();
     REQUIRE(result == "ade");
 }
+
+TEST_CASE("add the same listener multiple times") {
+    std::string result;
+    CppUtils::ListenersSet<> listenersSet;
+    auto a = [&] {
+        result.push_back('a');
+    };
+    listenersSet.addListener(&a);
+    listenersSet.addListener(&a);
+    listenersSet.executeAll();
+    REQUIRE(result == "a");
+}

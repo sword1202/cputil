@@ -12,6 +12,7 @@
 #include "assert.h"
 #include <mutex>
 #include "Maps.h"
+#include "Algorithms.h"
 
 #ifndef NDEBUG
 #include <thread>
@@ -49,7 +50,31 @@ namespace CppUtils {
         int nextKey = 1;
 #ifndef NDEBUG
         mutable std::thread::id threadId;
+
+        bool checkThereIsNoKeyInFunctionPointerListenersMap(int key) const {
+            auto values = Maps::Values(functionPointerListenersMap);
+            return !ContainsValue(values, key);
+        }
 #endif
+
+        template <typename Function>
+        void addFunctionalPointerLisetner(Function* func, ListenerAction listenerAction) {
+            {
+                std::lock_guard<Mutex> _(mutex);
+                if (functionPointerListenersMap.count(func)) {
+                    return;
+                }
+            }
+
+            int key = addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
+                (*func)(args...);
+                return listenerAction;
+            }));
+
+            std::lock_guard<Mutex> _(mutex);
+            functionPointerListenersMap[func] = key;
+        }
+
     public:
         int addListenerWithAction(const Listener &func) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
@@ -73,15 +98,8 @@ namespace CppUtils {
         }
 
         template <typename Function>
-        int addListener(Function* func) {
-            int key = addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
-                (*func)(args...);
-                return DONT_DELETE_LISTENER;
-            }));
-
-            std::lock_guard<Mutex> _(mutex);
-            functionPointerListenersMap[func] = key;
-            return key;
+        void addListener(Function* func) {
+            addFunctionalPointerLisetner(func, DONT_DELETE_LISTENER);
         }
 
         template <typename Function>
@@ -93,20 +111,15 @@ namespace CppUtils {
         }
 
         template <typename Function>
-        int addOneShotListener(Function* func) {
-            int key = addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
-                (*func)(args...);
-                return DELETE_LISTENER;
-            }));
-
-            std::lock_guard<Mutex> _(mutex);
-            functionPointerListenersMap[func] = key;
-            return key;
+        void addOneShotListener(Function* func) {
+            addFunctionalPointerLisetner(func, DELETE_LISTENER);
         }
 
         bool removeListener(int key) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
             std::lock_guard<Mutex> _(mutex);
+            assert(checkThereIsNoKeyInFunctionPointerListenersMap(key) && "trying to delete pointer to functional "
+                                                                          "object through key");
             return (bool)listeners.erase(key);
         }
 
