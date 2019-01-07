@@ -8,6 +8,7 @@
 namespace CppUtils {
     namespace Random {
         double RandomDoubleInClosedRange(double min, double max);
+        int RandomIntInRange(int min, int max);
     }
 }
 

@@ -1,0 +1,42 @@
+#ifndef DRAWERCOLOR_H
+#define DRAWERCOLOR_H
+
+namespace CppUtils {
+    typedef unsigned char uchar;
+
+    class Color {
+        uchar rgba[4];
+    public:
+        static Color white();
+        static Color transparent();
+        static Color black();
+        static Color red();
+        static Color green();
+        static Color blue();
+
+        Color();
+
+        Color(uchar r, uchar g, uchar b, uchar a = 255);
+        static Color fromHex(int hex);
+
+        uchar operator[](int index) const;
+        uchar &operator[](int index);
+
+        uchar r() const;
+        uchar g() const;
+        uchar b() const;
+        uchar a() const;
+
+        uchar &r();
+        uchar &g();
+        uchar &b();
+        uchar &a();
+
+        const uchar *getRgba() const;
+
+        bool operator==(const Color &rhs) const;
+        bool operator!=(const Color &rhs) const;
+    };
+}
+
+#endif // DRAWERCOLOR_H

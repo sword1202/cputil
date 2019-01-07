@@ -10,7 +10,14 @@ namespace CppUtils {
         double RandomDoubleInClosedRange(double min, double max) {
             static std::random_device rd;
             static std::mt19937 gen(rd());
-            std::uniform_real_distribution<> distribution(min, std::nextafter(max, std::numeric_limits<double>::max()));
+            static std::uniform_real_distribution<> distribution(min, std::nextafter(max, std::numeric_limits<double>::max()));
+            return distribution(gen);
+        }
+
+        int RandomIntInRange(int min, int max) {
+            static std::random_device rd;
+            static std::mt19937 gen(rd());
+            static std::uniform_int_distribution<> distribution(min, max);
             return distribution(gen);
         }
     }
