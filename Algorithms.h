@@ -280,7 +280,7 @@ namespace CppUtils {
         return to;
     }
 
-    template<typename T, typename Result = T>
+    template<typename Result, typename T>
     Result Sum(const T* data, int size) {
         return std::accumulate(data, data + size, Result());
     }
