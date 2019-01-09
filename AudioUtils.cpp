@@ -55,9 +55,8 @@ namespace AudioUtils {
         }
     }
 
-    std::vector<short> ResizePreviewSamples(const std::vector<short>& samples, int newSize) {
-        assert(newSize > 0 && !samples.empty());
-        int currentSize = int(samples.size());
+    std::vector<short> ResizePreviewSamples(const short* samples, int samplesSize, int newSize) {
+        assert(newSize > 0 && samplesSize > 0);
 
         std::vector<short> result;
         // reserve a bit more
@@ -65,23 +64,23 @@ namespace AudioUtils {
         double resultSummarySize = 0;
         int samplesSeek = 0;
 
-        if (currentSize > newSize) {
-            double batchSize = double(currentSize) / newSize;
-            while (samplesSeek < currentSize) {
+        if (samplesSize > newSize) {
+            double batchSize = double(samplesSize) / newSize;
+            while (samplesSeek < samplesSize) {
                 resultSummarySize += batchSize;
                 int intBatchSize = int(round(resultSummarySize - samplesSeek));
-                intBatchSize = std::min(intBatchSize, currentSize - samplesSeek);
+                intBatchSize = std::min(intBatchSize, samplesSize - samplesSeek);
 
-                int sum = CppUtils::Sum<int>(samples.data() + samplesSeek, intBatchSize);
+                int sum = CppUtils::Sum<int>(samples + samplesSeek, intBatchSize);
                 result.push_back(sum);
 
                 samplesSeek += intBatchSize;
             }
-        } else if(currentSize < newSize) {
-            double batchSize = double(newSize) / currentSize;
+        } else if(samplesSize < newSize) {
+            double batchSize = double(newSize) / samplesSize;
             int sampleIndex = 0;
 
-            while (samplesSeek < currentSize) {
+            while (samplesSeek < samplesSize) {
                 resultSummarySize += batchSize;
                 int intBatchSize = int(round(resultSummarySize - samplesSeek));
                 intBatchSize = std::min(intBatchSize, newSize - samplesSeek);
@@ -104,5 +103,10 @@ namespace AudioUtils {
         result.resize(static_cast<size_t>(newSize));
 
         return result;
+    }
+
+    std::vector<short> ResizePreviewSamples(const std::string& rawPcm, int newSize) {
+        int size = int(rawPcm.size() / sizeof(short));
+        return ResizePreviewSamples(reinterpret_cast<const short*>(rawPcm.data()), size, newSize);
     }
 };

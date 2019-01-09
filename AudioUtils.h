@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
 namespace AudioUtils {
     double GetSampleTimeInSeconds(int sampleSize, int sampleRate);
@@ -20,7 +21,8 @@ namespace AudioUtils {
     void Int16SamplesIntoFloatSamples(const short* in, int size, float* out);
     void FloatSamplesIntoInt16Samples(const float* in, int size, short* out);
 
-    std::vector<short> ResizePreviewSamples(const std::vector<short>& samples, int newSize);
+    std::vector<short> ResizePreviewSamples(const std::string& rawPcm, int newSize);
+    std::vector<short> ResizePreviewSamples(const short* samples, int samplesSize, int newSize);
 };
 
 
