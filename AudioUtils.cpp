@@ -71,8 +71,8 @@ namespace AudioUtils {
                 int intBatchSize = int(round(resultSummarySize - samplesSeek));
                 intBatchSize = std::min(intBatchSize, samplesSize - samplesSeek);
 
-                int sum = CppUtils::Sum<int>(samples + samplesSeek, intBatchSize);
-                result.push_back(sum);
+                int average = CppUtils::AbsoluteAverage<int>(samples + samplesSeek, intBatchSize);
+                result.push_back(short(average));
 
                 samplesSeek += intBatchSize;
             }
@@ -85,7 +85,7 @@ namespace AudioUtils {
                 int intBatchSize = int(round(resultSummarySize - samplesSeek));
                 intBatchSize = std::min(intBatchSize, newSize - samplesSeek);
 
-                short sample = samples[sampleIndex++];
+                auto sample = short(abs(samples[sampleIndex++]));
                 for (int i = 0; i < intBatchSize; ++i) {
                     result.push_back(sample);
                 }

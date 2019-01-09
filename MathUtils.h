@@ -37,6 +37,17 @@ namespace CppUtils {
 
             return value >= a && value <= b;
         }
+
+        template<typename Number>
+        Number SelectValueFromRangeProjectedInRange(Number value,
+                                                    Number fromRangeBegin, Number fromRangeEnd,
+                                                    Number inRangeBegin, Number inRangeEnd) {
+            assert(value >= fromRangeBegin);
+            assert(value <= fromRangeEnd);
+
+            double k = double(inRangeBegin - inRangeEnd) / (fromRangeBegin - fromRangeEnd);
+            return Number(round(value * k + inRangeBegin));
+        }
     }
 }
 
