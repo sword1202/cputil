@@ -5,6 +5,7 @@
 #include <cmath>
 #include <assert.h>
 #include "AudioUtils.h"
+#include "Algorithms.h"
 
 namespace AudioUtils {
     int64_t GetSampleTimeInMicroseconds(int sampleSize, int sampleRate) {
@@ -52,5 +53,56 @@ namespace AudioUtils {
         for (int i = 0; i < size; ++i) {
             out[i] = static_cast<short>(in[i] * div);
         }
+    }
+
+    std::vector<short> ResizePreviewSamples(const std::vector<short>& samples, int newSize) {
+        assert(newSize > 0 && !samples.empty());
+        int currentSize = int(samples.size());
+
+        std::vector<short> result;
+        // reserve a bit more
+        result.reserve(static_cast<size_t>(newSize) + 100);
+        double resultSummarySize = 0;
+        int samplesSeek = 0;
+
+        if (currentSize > newSize) {
+            double batchSize = double(currentSize) / newSize;
+            while (samplesSeek < currentSize) {
+                resultSummarySize += batchSize;
+                int intBatchSize = int(round(resultSummarySize - samplesSeek));
+                intBatchSize = std::min(intBatchSize, currentSize - samplesSeek);
+
+                int sum = CppUtils::Sum<int>(samples.data() + samplesSeek, intBatchSize);
+                result.push_back(sum);
+
+                samplesSeek += intBatchSize;
+            }
+        } else if(currentSize < newSize) {
+            double batchSize = double(newSize) / currentSize;
+            int sampleIndex = 0;
+
+            while (samplesSeek < currentSize) {
+                resultSummarySize += batchSize;
+                int intBatchSize = int(round(resultSummarySize - samplesSeek));
+                intBatchSize = std::min(intBatchSize, newSize - samplesSeek);
+
+                short sample = samples[sampleIndex++];
+                for (int i = 0; i < intBatchSize; ++i) {
+                    result.push_back(sample);
+                }
+
+                samplesSeek += intBatchSize;
+            }
+        } else {
+            return result;
+        }
+
+        while (result.size() < newSize) {
+            result.push_back(result.back());
+        }
+
+        result.resize(static_cast<size_t>(newSize));
+
+        return result;
     }
 };
