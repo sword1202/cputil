@@ -34,6 +34,9 @@ namespace CppUtils {
 
         const uchar *getRgba() const;
 
+        // opacity - [0.0, 1.0]
+        Color applyOpacity(double opacity);
+
         bool operator==(const Color &rhs) const;
         bool operator!=(const Color &rhs) const;
     };

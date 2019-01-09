@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <assert.h>
 #include "Color.h"
+#include "MathUtils.h"
 #include <cassert>
 
 using namespace CppUtils;
@@ -110,4 +111,9 @@ bool Color::operator!=(const Color &rhs) const {
 
 const uchar *Color::getRgba() const {
     return rgba;
+}
+
+Color Color::applyOpacity(double opacity) {
+    assert(opacity >= 0 && opacity <= 1.0);
+    return Color {r(), g(), b(), uchar(a() * opacity)};
 }
