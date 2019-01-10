@@ -28,8 +28,8 @@ namespace CppUtils {
         }
 
         template <typename Set>
-        auto FindOrDefault(const Set& set, decltype(*set.begin()) defaultValue) {
-            auto iter = set.find(defaultValue);
+        auto FindOrDefault(const Set& set, decltype(*set.begin()) value, decltype(*set.begin()) defaultValue) {
+            auto iter = set.find(value);
             if (iter == set.end()) {
                 return defaultValue;
             }
