@@ -12,7 +12,7 @@ namespace CppUtils {
     class ExecuteInTheEndOfScope {
         Func func;
     public:
-        ExecuteInTheEndOfScope(const Func& func) : func(func) {
+        explicit ExecuteInTheEndOfScope(const Func& func) : func(func) {
 
         }
 
