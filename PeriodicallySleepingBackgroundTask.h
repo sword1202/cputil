@@ -8,7 +8,7 @@
 
 #include <atomic>
 #include <functional>
-#include "SynchronizedCallbacksQueue.h"
+#include "CallbacksQueue.h"
 
 namespace CppUtils {
 
@@ -31,7 +31,7 @@ namespace CppUtils {
     };
 
     class PeriodicallySleepingBackgroundTaskWithCallbacksQueue : public PeriodicallySleepingBackgroundTask {
-        SynchronizedCallbacksQueue queue;
+        CallbacksQueue queue;
     public:
         void processQueue();
         void runWithSleepingIntervalInMicroseconds(const std::function<void()> &action, int64_t interval) override;

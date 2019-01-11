@@ -13,6 +13,7 @@
 #include <mutex>
 #include "Maps.h"
 #include "Algorithms.h"
+#include "DummyMutex.h"
 
 #ifndef NDEBUG
 #include <thread>
@@ -31,11 +32,6 @@ namespace CppUtils {
     enum ListenerAction {
         DONT_DELETE_LISTENER,
         DELETE_LISTENER
-    };
-
-    struct DummyMutex {
-        inline void lock() {}
-        inline void unlock() {}
     };
 
     template<typename Mutex, typename... Args>
@@ -185,6 +181,12 @@ namespace CppUtils {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
             std::lock_guard<Mutex> _(mutex);
             return !listeners.empty();
+        }
+
+        void clear() {
+            CPPUTILS_LISTENERS_SET_DEBUG_INIT
+            std::lock_guard<Mutex> _(mutex);
+            listeners.clear();
         }
     };
 
