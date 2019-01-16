@@ -45,6 +45,19 @@ namespace CppUtils {
         T distanceTo(const Point<T>& to) const {
             return (T)sqrt(sqrDistanceTo(to));
         }
+
+        Point<T> operator-(const Point<T>& anotherPoint) {
+            return Point<T>(x - anotherPoint.x, y - anotherPoint.y);
+        }
+
+        Point<T> operator+(const Point<T>& anotherPoint) {
+            return Point<T>(x + anotherPoint.x, y + anotherPoint.y);
+        }
+
+        void translate(T x, T y) {
+            this->x += x;
+            this->y += y;
+        }
     };
 
     typedef Point<float> PointF;

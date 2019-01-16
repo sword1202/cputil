@@ -211,6 +211,10 @@ namespace CppUtils {
         bool operator!=(const RoundedRect<Float> &rhs) const {
             return !(rhs == *this);
         }
+
+        void translate(Float x, Float y) {
+            A.translate(x, y);
+        }
     };
 
     typedef RoundedRect<float> RoundedRectF;
