@@ -50,6 +50,11 @@ namespace CppUtils {
             return Point<T>(x - anotherPoint.x, y - anotherPoint.y);
         }
 
+        Point<T>& operator-=(const Point<T>& anotherPoint) {
+            translate(anotherPoint.x, anotherPoint.y);
+            return *this;
+        }
+
         Point<T> operator+(const Point<T>& anotherPoint) {
             return Point<T>(x + anotherPoint.x, y + anotherPoint.y);
         }

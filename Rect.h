@@ -26,7 +26,13 @@ namespace CppUtils {
         bool containsPoint(const Point<T>& point) const {
             return containsPoint(point.x, point.y);
         }
+
+        void translate(T x, T y) {
+            A.translate(x, y);
+        }
     };
+
+    typedef Rect<float> RectF;
 }
 
 
