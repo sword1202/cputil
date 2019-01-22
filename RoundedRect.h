@@ -190,7 +190,7 @@ namespace CppUtils {
 
         bool containsPoint(Float x, Float y) const {
             return Rect<Float>(A.x + radius, A.y, width - radius * 2, height).containsPoint(x, y)
-                    || Rect<Float>(A.x, A.y + height, width, height - radius * 2).containsPoint(x, y)
+                    || Rect<Float>(A.x, A.y + radius, width, height - radius * 2).containsPoint(x, y)
                     || Circle<Float>(Point<Float>(A.x + radius, A.y + radius), radius).containsPoint(x, y)
                     || Circle<Float>(Point<Float>(A.x + width - radius, A.y + radius), radius).containsPoint(x, y)
                     || Circle<Float>(Point<Float>(A.x + radius, A.y + height - radius), radius).containsPoint(x, y)
