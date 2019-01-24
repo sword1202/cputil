@@ -2,6 +2,8 @@
 #include <assert.h>
 #include "Color.h"
 #include "MathUtils.h"
+#include "BinaryMath.h"
+#include "StringUtils.h"
 #include <cassert>
 
 using namespace CppUtils;
@@ -59,24 +61,6 @@ uchar &Color::a() {
     return rgba[3];
 }
 
-Color Color::fromHex(int hex) {
-    //If we have alpha, it's in the format 0xRRGGBBAA
-    if(hex > 0x00FFFFFF) {
-        uchar r = static_cast<uchar>((hex >> 24) & 0xff);
-        uchar g = static_cast<uchar>((hex >> 16) & 0xff);
-        uchar b = static_cast<uchar>((hex >> 8) & 0xff);
-        uchar a = static_cast<uchar>(hex & 0xff);
-        return Color(r, g, b, a);
-    } else {
-        //If we *don't* have alpha, it's in the format 0x00RRGGBB
-        uchar r = static_cast<uchar>((hex >> 16) & 0xff);
-        uchar g = static_cast<uchar>((hex >> 8) & 0xff);
-        uchar b = static_cast<uchar>(hex & 0xff);
-        uchar a = 255;
-        return Color(r, g, b, a);
-    }
-}
-
 Color Color::white() {
     return {255, 255, 255, 255};
 }
@@ -116,4 +100,34 @@ const uchar *Color::getRgba() const {
 Color Color::applyOpacity(double opacity) {
     assert(opacity >= 0 && opacity <= 1.0);
     return Color {r(), g(), b(), uchar(a() * opacity)};
+}
+
+Color Color::fromHexString(const std::string &hexString) {
+    assert(hexString.size() == 6 || hexString.size() == 8);
+
+    Color color;
+    int index = 0;
+    // Has alpha channel
+    if (hexString.size() == 8) {
+        color.a() = Strings::ParseHexByte(hexString.data());
+        index += 2;
+    }
+
+    color.r() = Strings::ParseHexByte(hexString.data() + index);
+    index += 2;
+    color.g() = Strings::ParseHexByte(hexString.data() + index);
+    index += 2;
+    color.b() = Strings::ParseHexByte(hexString.data() + index);
+
+    return color;
+}
+
+std::string Color::toHexString() const {
+    std::string result;
+    result.reserve(8);
+    result += Strings::ToHexByteString(a());
+    result += Strings::ToHexByteString(r());
+    result += Strings::ToHexByteString(g());
+    result += Strings::ToHexByteString(b());
+    return result;
 }

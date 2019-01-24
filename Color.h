@@ -1,6 +1,8 @@
 #ifndef DRAWERCOLOR_H
 #define DRAWERCOLOR_H
 
+#include <string>
+
 namespace CppUtils {
     typedef unsigned char uchar;
 
@@ -17,7 +19,6 @@ namespace CppUtils {
         Color();
 
         Color(uchar r, uchar g, uchar b, uchar a = 255);
-        static Color fromHex(int hex);
 
         uchar operator[](int index) const;
         uchar &operator[](int index);
@@ -39,6 +40,9 @@ namespace CppUtils {
 
         bool operator==(const Color &rhs) const;
         bool operator!=(const Color &rhs) const;
+
+        static Color fromHexString(const std::string& hexString);
+        std::string toHexString() const;
     };
 }
 
