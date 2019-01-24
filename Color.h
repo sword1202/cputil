@@ -2,6 +2,9 @@
 #define DRAWERCOLOR_H
 
 #include <string>
+#ifdef QT_CORE_LIB
+#include <QColor>
+#endif
 
 namespace CppUtils {
     typedef unsigned char uchar;
@@ -43,7 +46,21 @@ namespace CppUtils {
 
         static Color fromHexString(const std::string& hexString);
         std::string toHexString() const;
+
+#ifdef QT_CORE_LIB
+    QColor toQColor() const;
+#endif
     };
+}
+
+namespace std {
+    template <>
+    struct hash<CppUtils::Color> {
+        std::size_t operator()(const CppUtils::Color& k) const {
+            return (size_t) reinterpret_cast<const int32_t&>(k);
+        }
+    };
+
 }
 
 #endif // DRAWERCOLOR_H

@@ -131,3 +131,9 @@ std::string Color::toHexString() const {
     result += Strings::ToHexByteString(b());
     return result;
 }
+
+#ifdef QT_CORE_LIB
+QColor Color::toQColor() const {
+    return QColor(r(), g(), b(), a());
+}
+#endif
