@@ -26,6 +26,18 @@ TEST_CASE("join") {
     REQUIRE(Join(e, ", ") == "sdsd");
 }
 
+TEST_CASE("join to stream") {
+    const char* values[] = {"a", "b", "c", "d"};
+    std::stringstream stream;
+    JoinToStream(stream, values, values + 4, "\n");
+    REQUIRE(stream.str() == "a\nb\nc\nd");
+}
+
+TEST_CASE("read lines") {
+    std::stringstream stream("a\nb\nc\nd");
+    REQUIRE(ReadAllIntoLines(stream) == std::vector<std::string>{"a", "b", "c", "d"});
+}
+
 TEST_CASE("replace") {
     std::string str = "abcefd";
     REQUIRE(ReplaceFirst(str, "abc", "34") == "34efd");

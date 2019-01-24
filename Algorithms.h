@@ -349,6 +349,29 @@ namespace CppUtils {
         out->resize(itersRange.second - itersRange.first);
         std::copy(itersRange.first, itersRange.second, out->begin());
     }
+
+    template<typename Container, typename Predicate>
+    std::vector<typename Container::value_type> Filter(const Container& container, const Predicate& predicate) {
+        std::vector<typename Container::value_type> result;
+        for (const auto& value : container) {
+            if (predicate(value)) {
+                result.push_back(value);
+            }
+        }
+
+        return result;
+    }
+
+    template<typename Container, typename Predicate, typename InsertionContainer>
+    bool InsertAfter(Container* container, const Predicate& predicate, const InsertionContainer& insertionContainer) {
+        auto iter = std::find_if(container->begin(), container->end(), predicate);
+        if (iter == container->end()) {
+            return false;
+        }
+
+        container->insert(++iter, insertionContainer.begin(), insertionContainer.end());
+        return true;
+    }
 }
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H

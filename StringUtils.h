@@ -328,6 +328,63 @@ namespace CppUtils {
             return std::basic_string<Char>(vec.begin(), vec.end());
         }
 
+        template<typename Char, typename FilterPredicate>
+        std::vector<std::basic_string<Char>> ReadAllIntoLines(std::basic_istream<Char>& is,
+                const FilterPredicate& predicate) {
+            std::vector<std::basic_string<Char>> result;
+            std::string line;
+            char ch;
+            while (true) {
+                ch = Char(is.get());
+                if (is.eof()) {
+                    break;
+                }
+
+                if (ch == '\n') {
+                    if (predicate(line)) {
+                        result.push_back(line);
+                    }
+                    line.clear();
+                } else {
+                    line += ch;
+                }
+            }
+
+            if (ch != '\n') {
+                result.push_back(line);
+            }
+
+            return result;
+        }
+
+        template<typename Char, typename FilterPredicate>
+        std::vector<std::basic_string<Char>> ReadAllIntoLines(const char* filePath,
+                const FilterPredicate& predicate) {
+            std::basic_fstream<Char> is = Streams::OpenFile<Char>(filePath, std::ios::in);
+            return ReadAllIntoLines(is, predicate);
+        }
+
+        template<typename Char = char>
+        std::vector<std::basic_string<Char>> ReadAllIntoLines(const char* filePath) {
+            return ReadAllIntoLines<Char>(filePath, [] (const std::basic_string<Char>&) {return true;});
+        }
+
+        template<typename Char>
+        std::vector<std::basic_string<Char>> ReadAllIntoLines(std::basic_istream<Char>& is) {
+            return ReadAllIntoLines(is, [] (const std::basic_string<Char>&) {return true;});
+        }
+
+        template<typename LinesContainer>
+        void WriteLines(std::ostream& os, const LinesContainer& linesContainer) {
+            JoinToStream(os, linesContainer.begin(), linesContainer.end(), "\n");
+        }
+
+        template<typename LinesContainer>
+        void WriteLinesToFile(const char* filePath, const LinesContainer& linesContainer) {
+            auto os = Streams::OpenFile<typename LinesContainer::value_type::value_type>(filePath, std::ios::out);
+            WriteLines(os, linesContainer);
+        }
+
         namespace {
             const int ASCII_HEX_TABLE[] = {
                     // ASCII
