@@ -29,6 +29,8 @@ namespace CppUtils {
         }
 #endif
 
+        const std::string EMPTY = "";
+
         template<typename Iter, typename Char>
         void JoinToStream(std::basic_ostream<Char>& stream, Iter begin, Iter end, const Char* separator) {
             if (begin != end) {
