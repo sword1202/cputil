@@ -8,6 +8,9 @@
 #include "Algorithms.h"
 
 namespace AudioUtils {
+    constexpr short MAX_SAMPLE = std::numeric_limits<short>::max();
+    constexpr short MIN_SAMPLE = std::numeric_limits<short>::min();
+
     int64_t GetSampleTimeInMicroseconds(int sampleSize, int sampleRate) {
         return int16_t(round(1000000.0 * sampleSize / (double)sampleRate));
     }
@@ -41,7 +44,7 @@ namespace AudioUtils {
     }
 
     void Int16SamplesIntoFloatSamples(const short* in, int size, float* out) {
-        const float div = 1.0f/32768.0f;
+        const float div = 1.0f / (MAX_SAMPLE + 1);
 
         for (int i = 0; i < size; ++i) {
             out[i] = in[i] * div;
@@ -49,7 +52,7 @@ namespace AudioUtils {
     }
 
     void FloatSamplesIntoInt16Samples(const float* in, int size, short* out) {
-        const float div = 32768.0f;
+        const float div = MAX_SAMPLE + 1;
         for (int i = 0; i < size; ++i) {
             out[i] = static_cast<short>(in[i] * div);
         }
@@ -108,5 +111,22 @@ namespace AudioUtils {
     std::vector<short> ResizePreviewSamples(const std::string& rawPcm, int newSize) {
         int size = int(rawPcm.size() / sizeof(short));
         return ResizePreviewSamples(reinterpret_cast<const short*>(rawPcm.data()), size, newSize);
+    }
+
+    void Mix2Sounds(const short* soundA, const short* soundB, int size, short* out, float aVolume, float bVolume) {
+        assert(aVolume >= 0 && bVolume >= 0);
+
+        for (int i = 0; i < size; ++i) {
+            float a = soundA[i] * aVolume;
+            float b = soundB[i] * bVolume;
+            float result = a + b;
+            if (result > MAX_SAMPLE) {
+                result = MAX_SAMPLE;
+            } else if(result < MIN_SAMPLE) {
+                result = MIN_SAMPLE;
+            }
+
+            out[i] = short(roundf(result));
+        }
     }
 };
