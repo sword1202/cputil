@@ -54,7 +54,7 @@ Bitmap::Bitmap(Bitmap &&bitmap) {
     bitmap.data = nullptr;
 }
 
-Bitmap::Bitmap(const Bitmap &&bitmap) {
+Bitmap::Bitmap(const Bitmap &bitmap) {
     init(bitmap.width, bitmap.height);
     std::copy(bitmap.data, bitmap.data + width * height * PIXEL_SIZE, data);
 }

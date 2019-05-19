@@ -15,7 +15,7 @@ namespace CppUtils {
         void init(int width, int height);
     public:
         Bitmap(Bitmap&& bitmap);
-        Bitmap(const Bitmap&& bitmap);
+        Bitmap(const Bitmap& bitmap);
         Bitmap(int width, int height);
         void setPixelRGBAColor(int x, int y, const uchar *rgba);
         void setPixelRGBAColor(int x, int y, uchar r, uchar g, uchar b, uchar a);
