@@ -14,6 +14,13 @@ namespace CppUtils {
         void FillZero(T* array, int size) {
             std::memset(array, 0, sizeof(T) * size);
         }
+
+        template<typename PointerContainer>
+        void DeleteAll(PointerContainer& container) {
+            for (auto* pointer : container) {
+                delete pointer;
+            }
+        }
     }
 }
 
