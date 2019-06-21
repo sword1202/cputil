@@ -372,6 +372,12 @@ namespace CppUtils {
         container->insert(++iter, insertionContainer.begin(), insertionContainer.end());
         return true;
     }
+
+    template <typename Container1, typename Container2>
+    bool Equal(const Container1& a, const Container2& b) {
+        return a.size() == b.size()
+        && std::equal(a.begin(), a.end(), b.begin());
+    }
 }
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
