@@ -14,6 +14,7 @@
 #include "Maps.h"
 #include "Algorithms.h"
 #include "DummyMutex.h"
+#include "DestructorQueue.h"
 
 #ifndef NDEBUG
 #include <thread>
@@ -54,7 +55,8 @@ namespace CppUtils {
 #endif
 
         template <typename Function>
-        void addFunctionalPointerLisetner(Function* func, ListenerAction listenerAction) {
+        void addFunctionalPointerListener(Function *func, ListenerAction listenerAction,
+                AbstractDestructorQueue *parent = nullptr) {
             {
                 std::lock_guard<Mutex> _(mutex);
                 if (functionPointerListenersMap.count(func)) {
@@ -67,12 +69,19 @@ namespace CppUtils {
                 return listenerAction;
             }));
 
+            if (parent) {
+                parent->executeOnDestructor([=] {
+                    removeListener(func);
+                });
+            }
+
             std::lock_guard<Mutex> _(mutex);
             functionPointerListenersMap[func] = key;
         }
 
     public:
-        int addListenerWithAction(const Listener &func) {
+        // Removes the listener automatically, when parent is destroyed
+        int addListenerWithAction(const Listener &func, AbstractDestructorQueue* parent = nullptr) {
             CPPUTILS_LISTENERS_SET_DEBUG_INIT
 
             int key;
@@ -82,33 +91,39 @@ namespace CppUtils {
                 listeners[key] = func;
             }
 
+            if (parent) {
+                parent->executeOnDestructor([=] {
+                    removeListener(key);
+                });
+            }
+
             return key;
         }
 
         template <typename Function>
-        int addListener(const Function& func) {
+        int addListener(const Function& func, AbstractDestructorQueue* parent = nullptr) {
             return addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
                 func(args...);
                 return DONT_DELETE_LISTENER;
-            }));
+            }), parent);
         }
 
         template <typename Function>
-        void addListener(Function* func) {
-            addFunctionalPointerLisetner(func, DONT_DELETE_LISTENER);
+        void addListener(Function* func, AbstractDestructorQueue* parent = nullptr) {
+            addFunctionalPointerListener(func, DONT_DELETE_LISTENER, parent);
         }
 
         template <typename Function>
-        int addOneShotListener(const Function& func) {
+        int addOneShotListener(const Function& func, AbstractDestructorQueue* parent = nullptr) {
             return addListenerWithAction(Listener([=] (Args... args) -> ListenerAction {
                 func(args...);
                 return DELETE_LISTENER;
-            }));
+            }), parent);
         }
 
         template <typename Function>
-        void addOneShotListener(Function* func) {
-            addFunctionalPointerLisetner(func, DELETE_LISTENER);
+        void addOneShotListener(Function* func, AbstractDestructorQueue* parent = nullptr) {
+            addFunctionalPointerListener(func, DELETE_LISTENER);
         }
 
         bool removeListener(int key) {
