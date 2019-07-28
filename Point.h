@@ -6,6 +6,7 @@
 #ifndef VOCALTRAINER_POINT_H
 #define VOCALTRAINER_POINT_H
 
+#include <ostream>
 #include "HashUtils.h"
 #include "Primitives.h"
 
@@ -62,6 +63,11 @@ namespace CppUtils {
         void translate(T x, T y) {
             this->x += x;
             this->y += y;
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const Point &point) {
+            os << "x: " << point.x << " y: " << point.y;
+            return os;
         }
     };
 
