@@ -45,7 +45,7 @@ namespace CppUtils {
             assert(value >= fromRangeBegin);
             assert(value <= fromRangeEnd);
 
-            double k = double(inRangeBegin - inRangeEnd) / (fromRangeBegin - fromRangeEnd);
+            double k = double(inRangeEnd - inRangeBegin) / (fromRangeEnd - fromRangeBegin);
             return Number(round(value * k + inRangeBegin));
         }
     }
