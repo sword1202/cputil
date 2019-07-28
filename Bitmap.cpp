@@ -56,20 +56,29 @@ Bitmap::Bitmap(Bitmap &&bitmap) {
 
 Bitmap::Bitmap(const Bitmap &bitmap) {
     init(bitmap.width, bitmap.height);
-    std::copy(bitmap.data, bitmap.data + width * height * PIXEL_SIZE, data);
+    std::copy(bitmap.data, bitmap.data + getDataArraySize(), data);
 }
 
 void Bitmap::init(int width, int height) {
-    data = new uchar[width * height * PIXEL_SIZE];
     this->width = width;
     this->height = height;
+    data = new uchar[getDataArraySize()];
 }
 
 void Bitmap::fill(const Color &color) {
-    for (int i = 0; i < width * height * PIXEL_SIZE;) {
+    for (int i = 0; i < getDataArraySize();) {
         data[i++] = color.r();
         data[i++] = color.g();
         data[i++] = color.b();
         data[i++] = color.a();
     }
+}
+
+Bitmap::Bitmap(int width, int height, unsigned char *data) {
+    init(width, height);
+    std::copy(data, data + getDataArraySize(), this->data);
+}
+
+int Bitmap::getDataArraySize() const {
+    return width * height * PIXEL_SIZE;
 }

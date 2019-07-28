@@ -6,6 +6,10 @@
 #include <QColor>
 #endif
 
+#if defined(__OBJC__)
+#import <Cocoa/Cocoa.h>
+#endif
+
 namespace CppUtils {
     typedef unsigned char uchar;
 
@@ -49,6 +53,12 @@ namespace CppUtils {
 
 #ifdef QT_CORE_LIB
     QColor toQColor() const;
+#endif
+
+#if defined(__OBJC__)
+    inline NSColor* toNSColor() const {
+        return [NSColor colorWithRed:r()/255.0 green:g()/255.0 blue:b()/255.0 alpha:a()/255.0];
+    }
 #endif
     };
 }
