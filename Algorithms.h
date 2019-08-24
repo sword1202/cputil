@@ -228,6 +228,15 @@ namespace CppUtils {
         return false;
     }
 
+    template <typename Collection, typename Item>
+    void Remove(Collection& collection, const Item& item) {
+        for (auto iter = collection.begin(); iter != collection.end(); ++iter) {
+            if (*iter == item) {
+                collection.erase(iter);
+            }
+        }
+    }
+
     template <typename Map, typename Iter>
     void FillCountingMap(Map* map, Iter begin, Iter end) {
         std::for_each(begin, end, [=] (const auto& value) {
