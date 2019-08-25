@@ -9,11 +9,13 @@
 #include <assert.h>
 
 #include <functional>
+#include "OperationCanceler.h"
 
 namespace CppUtils {
 
     namespace Executors {
         void ExecuteOnMainThreadAfterDelay(std::function<void()> function, int delayInMilliseconds);
+        OperationCancelerPtr ExecuteCancelableOnMainThreadAfterDelay(std::function<void()> function, int delayInMilliseconds);
         void ExecuteOnMainThread(std::function<void()> function);
         // don't use it for long running operations, such as downloading content, copying large files, e.t.c.
         // use std::thread instead

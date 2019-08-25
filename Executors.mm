@@ -12,6 +12,18 @@ namespace CppUtils {
                 });
         }
 
+        OperationCancelerPtr ExecuteCancelableOnMainThreadAfterDelay(std::function<void()> function, int delayInMilliseconds) {
+            auto canceler = OperationCanceler::create();
+            ExecuteOnMainThreadAfterDelay([=] {
+                if (canceler->isCancelled()) {
+                    return;
+                }
+
+                function();
+            }, delayInMilliseconds);
+            return canceler;
+        }
+
         void ExecuteOnMainThread(std::function<void()> function) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 function();

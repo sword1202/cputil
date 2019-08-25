@@ -52,6 +52,10 @@ namespace CppUtils {
         inline int RoundToInt(float f) {
             return int(roundf(f));
         }
+
+        inline int RoundToInt(double d) {
+            return int(round(d));
+        }
     }
 }
 

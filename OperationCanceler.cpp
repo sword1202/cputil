@@ -4,6 +4,8 @@
 
 #include "OperationCanceler.h"
 
+using namespace CppUtils;
+
 bool OperationCanceler::isCancelled() const {
     return cancelled;
 }

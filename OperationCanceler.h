@@ -8,16 +8,18 @@
 #include <atomic>
 #include <memory>
 
-class OperationCanceler {
-    std::atomic_bool cancelled;
-    OperationCanceler();
-public:
-    bool isCancelled() const;
-    void cancel();
+namespace CppUtils {
+    class OperationCanceler {
+        std::atomic_bool cancelled;
+        OperationCanceler();
+    public:
+        bool isCancelled() const;
+        void cancel();
 
-    static std::shared_ptr<OperationCanceler> create();
-};
+        static std::shared_ptr<OperationCanceler> create();
+    };
 
-typedef std::shared_ptr<OperationCanceler> OperationCancelerPtr;
+    typedef std::shared_ptr<OperationCanceler> OperationCancelerPtr;
+}
 
 #endif //VOCALTRAINER_OPERATIONCANCELER_H
