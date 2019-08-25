@@ -48,6 +48,10 @@ namespace CppUtils {
             double k = double(inRangeEnd - inRangeBegin) / (fromRangeEnd - fromRangeBegin);
             return Number(round(value * k + inRangeBegin));
         }
+
+        inline int RoundToInt(float f) {
+            return int(roundf(f));
+        }
     }
 }
 
