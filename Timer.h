@@ -12,14 +12,26 @@
 namespace CppUtils {
     class Timer {
         int intervalInMilliseconds;
+        int currentInterval;
+        int initialDelay = -1;
+        int iterationsCount = 0;
+        int64_t lastIterationTimeInMicroseconds = 0;
         std::function<void()> callback;
         OperationCancelerPtr operationCanceler;
         int64_t timeSeek;
+        int64_t timerStartedTime;
         void action(int interval);
     public:
-        void start(int intervalInMilliseconds, const std::function<void()> &callback);
+        std::function<void()> onStop;
+
+        void start(int intervalInMilliseconds, const std::function<void()> &callback, int delay = -1);
         void stop();
         bool isRunning() const;
+        int getIterationsCount() const;
+        int getIntervalInMilliseconds() const;
+        int getInitialDelayInMilliseconds() const;
+        int64_t getLastIterationTimeInMicroseconds() const;
+        int64_t getTimerStartedTime() const;
     };
 }
 

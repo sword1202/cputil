@@ -15,17 +15,28 @@ bool Timer::isRunning() const {
     return operationCanceler && !operationCanceler->isCancelled();
 }
 
-void Timer::start(int intervalInMilliseconds, const std::function<void()> &callback) {
+void Timer::start(int intervalInMilliseconds, const std::function<void()> &callback, int delay) {
+    if (delay < 0) {
+        this->initialDelay = intervalInMilliseconds;
+    } else {
+        this->initialDelay = delay;
+    }
+
     assert(!isRunning());
     assert(intervalInMilliseconds > 0);
+    this->iterationsCount = 0;
     this->callback = callback;
     this->intervalInMilliseconds = intervalInMilliseconds;
     timeSeek = TimeUtils::NowInMicroseconds();
-    action(intervalInMilliseconds);
+    timerStartedTime = timeSeek;
+    lastIterationTimeInMicroseconds = 0;
+    currentInterval = initialDelay;
+    action(currentInterval);
 }
 void Timer::stop() {
     assert(isRunning());
     operationCanceler->cancel();
+    onStop();
 }
 
 void Timer::action(int interval) {
@@ -34,11 +45,38 @@ void Timer::action(int interval) {
         int64_t now = TimeUtils::NowInMicroseconds();
         int timeDiff = RoundToInt(int(now - timeSeek) / 1000.0);
         timeSeek = now;
-        auto delay = intervalInMilliseconds * 2 - timeDiff;
+        lastIterationTimeInMicroseconds = now;
+        auto delay = currentInterval * 2 - timeDiff;
         if (delay < 0) {
             delay = 0;
         }
 
+        if (iterationsCount == 1) {
+            this->currentInterval = intervalInMilliseconds;
+        }
+
+        iterationsCount++;
+
         this->action(delay);
     }, interval);
+}
+
+int Timer::getIterationsCount() const {
+    return iterationsCount;
+}
+
+int Timer::getIntervalInMilliseconds() const {
+    return intervalInMilliseconds;
+}
+
+int Timer::getInitialDelayInMilliseconds() const {
+    return initialDelay;
+}
+
+int64_t Timer::getLastIterationTimeInMicroseconds() const {
+    return lastIterationTimeInMicroseconds;
+}
+
+int64_t Timer::getTimerStartedTime() const {
+    return timerStartedTime;
 }
