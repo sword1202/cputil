@@ -101,6 +101,18 @@ namespace CppUtils {
         return MaxByKey(StlDebugUtils::begin(collection), StlDebugUtils::end(collection), keyProvider);
     };
 
+    template<typename Iterator, typename KeyProvider>
+    Iterator MinByKey(Iterator begin, Iterator end, const KeyProvider& keyProvider) {
+        return std::min_element(begin, end, [&keyProvider](const decltype(*begin)& a, const decltype(*begin)& b) {
+            return keyProvider(a) < keyProvider(b);
+        });
+    }
+
+    template<typename Collection, typename KeyProvider>
+    auto MinByKey(Collection& collection, const KeyProvider& keyProvider) {
+        return MinByKey(StlDebugUtils::begin(collection), StlDebugUtils::end(collection), keyProvider);
+    };
+
     // Returns an iterator pointing to the first element in the range [first, last) that is not
     // less than (i.e. greater or equal to) value, or last if no such element is found.
     template<typename Iterator, typename KeyProvider, typename Value>

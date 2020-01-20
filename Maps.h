@@ -25,6 +25,12 @@ namespace CppUtils {
             Values(map, &result);
             return result;
         }
+
+        template <typename K, typename V>
+        const std::map<K, V>& emptyMap() {
+            static std::map<K, V> map;
+            return map;
+        }
     };
 }
 
