@@ -12,6 +12,9 @@ struct WavConfig {
     unsigned int sampleRate = 44100;
     unsigned int numberOfChannels = 2;
     unsigned int bitsPerChannel = 16;
+
+    bool operator==(const WavConfig &rhs) const;
+    bool operator!=(const WavConfig &rhs) const;
 };
 
 class WAVFile {

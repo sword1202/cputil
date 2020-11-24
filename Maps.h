@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <optional>
 
 namespace CppUtils {
     namespace Maps {
@@ -30,6 +31,31 @@ namespace CppUtils {
         const std::map<K, V>& emptyMap() {
             static std::map<K, V> map;
             return map;
+        }
+
+        template <typename Map>
+        std::optional<typename Map::mapped_type> GetAndRemove(Map& map, const typename Map::key_type& key) {
+            auto iter = map.find(key);
+            if (iter != map.end()) {
+                auto result = iter->second;
+                map.erase(iter);
+                return result;
+            } else {
+                return std::nullopt;
+            }
+        }
+
+        template <typename Map>
+        auto GetOrDefault(const Map& map,
+                decltype(map.begin()->second) key,
+                decltype(map.begin()->second) defaultValue)
+        {
+            auto iter = map.find(key);
+            if (iter != map.end()) {
+                return iter->second;
+            } else {
+                return defaultValue;
+            }
         }
     };
 }

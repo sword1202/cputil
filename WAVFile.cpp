@@ -124,3 +124,13 @@ WavConfig WAVFile::parseWavHeader(const char *data) {
     config.bitsPerChannel = *reinterpret_cast<const uint16_t*>(data + BITS_PER_CHANNEL_POSITION);
     return config;
 }
+
+bool WavConfig::operator==(const WavConfig &rhs) const {
+    return sampleRate == rhs.sampleRate &&
+            numberOfChannels == rhs.numberOfChannels &&
+            bitsPerChannel == rhs.bitsPerChannel;
+}
+
+bool WavConfig::operator!=(const WavConfig &rhs) const {
+    return !(rhs == *this);
+}

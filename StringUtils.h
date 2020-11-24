@@ -442,6 +442,35 @@ namespace CppUtils {
         inline const char* ToHexByteString(unsigned char byte) {
             return HEX_BYTE_STRING_TABLE[byte];
         }
+
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> GetFileNameWithoutExtension(const std::basic_string<Char, Allocator>& fileName) {
+            auto dotIndex = fileName.find_last_of('.');
+            return std::basic_string<Char, Allocator>(fileName.begin(), fileName.begin() + dotIndex);
+        }
+
+        template<typename Char>
+        std::basic_string<Char> GetFileNameWithoutExtension(const Char* fileName) {
+            return GetFileNameWithoutExtension(std::basic_string<Char>(fileName));
+        }
+
+        template<typename Char, typename Allocator>
+        int ParseInt(const std::basic_string<Char, Allocator>& str, int defaultValue = 0) {
+            try {
+                return std::stoi(str);
+            } catch (std::exception& e) {
+                return defaultValue;
+            }
+        }
+
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> Unquote(const std::basic_string<Char, Allocator>& str, Char quote = '"') {
+            if (str.front() == quote && str.back() == quote) {
+                return str.substr(1, str.size() - 2);
+            } else {
+                return str;
+            }
+        }
     }
 }
 
