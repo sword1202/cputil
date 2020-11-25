@@ -46,7 +46,7 @@ namespace CppUtils {
             assert(value <= fromRangeEnd);
 
             double k = double(inRangeEnd - inRangeBegin) / (fromRangeEnd - fromRangeBegin);
-            return Number(round(value * k + inRangeBegin));
+            return Number((value - fromRangeBegin) * k + inRangeBegin);
         }
 
         inline int RoundToInt(float f) {

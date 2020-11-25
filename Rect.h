@@ -30,6 +30,18 @@ namespace CppUtils {
         void translate(T x, T y) {
             A.translate(x, y);
         }
+
+        Point<T> getB() {
+            return Point<T>(A.x + width, 0);
+        }
+
+        Point<T> getC() {
+            return Point<T>(A.x + width, A.y + height);
+        }
+
+        Point<T> getD() {
+            return Point<T>(0, A.y + height);
+        }
     };
 
     typedef Rect<float> RectF;
