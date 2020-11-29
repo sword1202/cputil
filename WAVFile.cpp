@@ -4,6 +4,7 @@
 
 #include <assert.h>
 #include "WAVFile.h"
+#include "AudioUtils.h"
 #include <iostream>
 
 #ifndef NO_BOOST
@@ -113,6 +114,14 @@ bool WAVFile::isWavFile(const char *data, int size) {
     data[14] == 't';
 }
 
+WavConfig WAVFile::getFloatSamples(const char* wavAudioData, int size, float* out) {
+    assert(isWavFile(wavAudioData, size));
+    WavConfig config = parseWavHeader(wavAudioData);
+    assert(config.bitsPerChannel == 16 && "Only 16bit samples are supported for now");
+    AudioUtils::Int16SamplesIntoFloatSamples(reinterpret_cast<const short *>(wavAudioData), size / 2, out);
+    return config;
+}
+
 int WAVFile::getAudioFormat() const {
     return audioFormat;
 }
@@ -123,6 +132,11 @@ WavConfig WAVFile::parseWavHeader(const char *data) {
     config.sampleRate = *reinterpret_cast<const uint32_t*>(data + SAMPLE_RATE_POSITION);
     config.bitsPerChannel = *reinterpret_cast<const uint16_t*>(data + BITS_PER_CHANNEL_POSITION);
     return config;
+}
+
+std::string WAVFile::readPcmData(const char *wavAudioData, int size) {
+    assert(size >= DATA_POSITION);
+    return std::string(wavAudioData + DATA_POSITION, static_cast<size_t>(size - DATA_POSITION));
 }
 
 bool WavConfig::operator==(const WavConfig &rhs) const {

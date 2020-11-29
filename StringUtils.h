@@ -471,6 +471,43 @@ namespace CppUtils {
                 return str;
             }
         }
+
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> RemoveLongestPrefixEndingWith(
+                const std::basic_string<Char, Allocator>& str,
+                const std::basic_string<Char, Allocator>& prefixEnding)
+        {
+            auto index = str.find_last_of(prefixEnding);
+            if (index == std::string::npos) {
+                return str;
+            }
+
+            return str.substr(index + prefixEnding.size());
+        }
+
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> RemoveLongestPrefixEndingWith(
+                const std::basic_string<Char, Allocator>& str,
+                const Char* prefixEnding)
+        {
+            return RemoveLongestPrefixEndingWith(str, std::basic_string<Char, Allocator>(prefixEnding));
+        }
+
+        template<typename Char, typename Allocator>
+        void ExtractFilenameAndExtension(
+                const std::basic_string<Char, Allocator>& str,
+                std::basic_string<Char, Allocator>* name,
+                std::basic_string<Char, Allocator>* extension)
+        {
+            auto indexOfDot = str.find_last_of('.');
+            if (indexOfDot == std::string::npos) {
+                *name = str;
+                *extension = "";
+            } else {
+                *name = str.substr(0, indexOfDot);
+                *extension = str.substr(indexOfDot + 1);
+            }
+        }
     }
 }
 

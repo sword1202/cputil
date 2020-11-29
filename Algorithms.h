@@ -193,6 +193,16 @@ namespace CppUtils {
     }
 
     template<typename Collection, typename Predicate>
+    const typename Collection::value_type* Find(const Collection& collection, const Predicate& predicate) {
+        auto iter = std::find_if(collection.begin(), collection.end(), predicate);
+        if (iter != collection.end()) {
+            return &*iter;
+        } else {
+            return nullptr;
+        }
+    }
+
+    template<typename Collection, typename Predicate>
     std::vector<int> FindIndexes(const Collection& collection, const Predicate& predicate) {
         std::vector<int> result;
 

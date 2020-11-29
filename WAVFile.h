@@ -119,6 +119,8 @@ public:
         return parseWavHeader(array.data());
     }
 
+    static WavConfig getFloatSamples(const char* wavAudioData, int size, float* out);
+    static std::string readPcmData(const char* wavAudioData, int size);
     static bool isWavFile(const char* data, int size);
 
     bool shouldDeleteStreamOnDestructor() const;

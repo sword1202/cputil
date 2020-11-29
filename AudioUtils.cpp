@@ -6,6 +6,9 @@
 #include <assert.h>
 #include "AudioUtils.h"
 #include "Algorithms.h"
+#include "MathUtils.h"
+
+using namespace CppUtils;
 
 namespace AudioUtils {
     constexpr short MAX_SAMPLE = std::numeric_limits<short>::max();
@@ -113,20 +116,19 @@ namespace AudioUtils {
         return ResizePreviewSamples(reinterpret_cast<const short*>(rawPcm.data()), size, newSize);
     }
 
-    void Mix2Sounds(const short* soundA, const short* soundB, int size, short* out, float aVolume, float bVolume) {
-        assert(aVolume >= 0 && bVolume >= 0);
-
+    void Mix2Sounds(const short* soundA, const short* soundB, int size, short* out) {
         for (int i = 0; i < size; ++i) {
-            float a = soundA[i] * aVolume;
-            float b = soundB[i] * bVolume;
-            float result = a + b;
-            if (result > MAX_SAMPLE) {
-                result = MAX_SAMPLE;
-            } else if(result < MIN_SAMPLE) {
-                result = MIN_SAMPLE;
+            auto a = uint16_t(soundA[i]);
+            auto b = uint16_t(soundB[i]);
+
+            unsigned int result = a + b;
+            auto max = std::numeric_limits<uint16_t>::max();
+            result -= Math::RoundToInt((a * b) / double(max));
+            if (result > max) {
+                result = max;
             }
 
-            out[i] = short(roundf(result));
+            out[i] = short(result);
         }
     }
 };
