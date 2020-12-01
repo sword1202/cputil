@@ -131,4 +131,20 @@ namespace AudioUtils {
             out[i] = short(result);
         }
     }
+
+    void Mix2Sounds(const short* soundA, const short* soundB, int sizeA, int sizeB, short* out) {
+        for (int i = 0; i < std::max(sizeA, sizeB); ++i) {
+            auto a = uint16_t(i < sizeA ? soundA[i] : 0);
+            auto b = uint16_t(i < sizeB ? soundB[i] : 0);
+
+            unsigned int result = a + b;
+            auto max = std::numeric_limits<uint16_t>::max();
+            result -= Math::RoundToInt((a * b) / double(max));
+            if (result > max) {
+                result = max;
+            }
+
+            out[i] = short(result);
+        }
+    }
 };

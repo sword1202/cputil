@@ -192,6 +192,17 @@ namespace CppUtils {
         return -1;
     }
 
+    template<typename Collection>
+    int FindIndex(const Collection& collection, const decltype(collection[0])& value) {
+        for (int i = 0; i < collection.size(); ++i) {
+            if (collection[i] == value) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     template<typename Collection, typename Predicate>
     const typename Collection::value_type* Find(const Collection& collection, const Predicate& predicate) {
         auto iter = std::find_if(collection.begin(), collection.end(), predicate);
@@ -265,6 +276,11 @@ namespace CppUtils {
             ++map[value];
         });
     };
+
+    template <typename Collection, typename T>
+    void Fill(Collection* collection, const T& value) {
+        std::fill(collection->begin(), collection->end(), value);
+    }
 
     template<typename Iter1, typename Iter2>
     bool ContentEqualsAnyOrderUsingHash(Iter1 begin, Iter1 end, Iter2 begin2, Iter2 end2) {

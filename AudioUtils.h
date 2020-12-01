@@ -25,6 +25,26 @@ namespace AudioUtils {
     std::vector<short> ResizePreviewSamples(const short* samples, int samplesSize, int newSize);
 
     void Mix2Sounds(const short* soundA, const short* soundB, int size, short* out);
+    void Mix2Sounds(const short* soundA, const short* soundB, int sizeA, int sizeB, short* out);
+    
+    template <typename SoundCollection, typename SoundBufferSizeCollection>
+    void MixSounds(const SoundCollection& sounds, const SoundBufferSizeCollection& soundBufferSize, short* out) {
+        int soundsCount = sounds.size();
+        if (soundsCount == 0) {
+            return;
+        } else if(soundsCount == 1) {
+            std::copy(sounds[0], sounds[0] + soundBufferSize[0], out);
+            return;
+        }
+
+        const short* mix = sounds[0];
+        int mixSize = soundBufferSize[0];
+        for (int i = 1; i < soundsCount; ++i) {
+            Mix2Sounds(mix, sounds[i], mixSize, soundBufferSize[i], out);
+            mix = out;
+            mixSize = std::max(soundBufferSize[i], mixSize);
+        }
+    }
 };
 
 
