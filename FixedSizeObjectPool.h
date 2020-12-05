@@ -11,7 +11,7 @@
 
 namespace CppUtils {
     template <typename T>
-    class FixedSizeObjectPool<T> {
+    class FixedSizeObjectPool {
         std::vector<bool> availableObjects;
         std::vector<T> pool;
     public:
@@ -21,7 +21,7 @@ namespace CppUtils {
             availableObjects.assign(count, true);
         }
 
-        T* getObject() {
+        T* tryGetObject() {
             for (int i = 0; i < availableObjects.size(); ++i) {
                 if (availableObjects[i]) {
                     availableObjects[i] = false;
@@ -30,6 +30,12 @@ namespace CppUtils {
             }
 
             return nullptr;
+        }
+
+        T* getObject() {
+            T* object = tryGetObject();
+            assert(object && "All objects in the pool are occupied");
+            return object;
         }
 
         void returnObject(const T* object) {

@@ -7,6 +7,7 @@
 #define VOCALTRAINER_MATH_H
 
 #include <cmath>
+#include "Primitives.h"
 
 namespace CppUtils {
 
@@ -55,6 +56,21 @@ namespace CppUtils {
 
         inline int RoundToInt(double d) {
             return int(round(d));
+        }
+
+        inline short RoundToShort(double d) {
+            int value = RoundToInt(d);
+            assert(value <= std::numeric_limits<short>::max() && value >= std::numeric_limits<short>::min());
+            return static_cast<short>(value);
+        }
+
+        inline double FindNearestDividable(double value, double denominator) {
+            double k = modf(value / denominator, nullptr);
+            if (k < 0.5) {
+                return value - denominator * k;
+            } else {
+                return value + denominator * (1 - k);
+            }
         }
     }
 }
