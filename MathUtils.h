@@ -65,7 +65,8 @@ namespace CppUtils {
         }
 
         inline double FindNearestDividable(double value, double denominator) {
-            double k = modf(value / denominator, nullptr);
+            double _;
+            double k = modf(value / denominator, &_);
             if (k < 0.5) {
                 return value - denominator * k;
             } else {
