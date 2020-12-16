@@ -73,6 +73,19 @@ namespace CppUtils {
                 return value + denominator * (1 - k);
             }
         }
+
+        template <typename In, typename Result>
+        Result CutIfOutOfClosedRange(In value, Result min, Result max) {
+            if (value < min) {
+                return min;
+            }
+
+            if (value > max) {
+                return max;
+            }
+
+            return value;
+        }
     }
 }
 
