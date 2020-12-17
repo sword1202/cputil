@@ -14,13 +14,24 @@ namespace CppUtils {
 
         void init(int width, int height);
     public:
-#ifdef __OBJC__
+#if __OBJC__
         static inline Bitmap fromCGImage(CGImage* image) {
+#if defined(__OBJC__) && TARGET_OS_MAC && !TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
             NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithCGImage:image];
             return Bitmap(int(rep.size.width), int(rep.size.height), rep.bitmapData);
+#else
+            CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(image));
+            UInt8* buf = (UInt8 *) CFDataGetBytePtr(rawData);
+            CFIndex length = CFDataGetLength(rawData);
+            int width = static_cast<int>(CGImageGetWidth(image));
+            int height = static_cast<int>(CGImageGetHeight(image));
+            Bitmap bitmap(width, height, buf);
+            CFRelease(rawData);
+            return bitmap;
+#endif
         }
 #endif
-
+        Bitmap();
         Bitmap(Bitmap&& bitmap);
         Bitmap(const Bitmap& bitmap);
         Bitmap(int width, int height);

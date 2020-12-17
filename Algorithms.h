@@ -10,7 +10,6 @@
 #include <unordered_map>
 #include <array>
 #include <numeric>
-#include <lber.h>
 
 namespace CppUtils {
     template<typename Iterator, typename Element>

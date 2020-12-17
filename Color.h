@@ -6,8 +6,18 @@
 #include <QColor>
 #endif
 
-#if defined(__OBJC__)
+#if defined(__OBJC__) && TARGET_OS_MAC && !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
+#define HAS_COCOA
+#elif defined(__OBJC__) && (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
+#define HAS_UIKIT
+#endif
+
+#ifdef HAS_COCOA
 #import <Cocoa/Cocoa.h>
+#endif
+
+#ifdef HAS_UIKIT
+#import <UIKit/UIKit.h>
 #endif
 
 namespace CppUtils {
@@ -52,13 +62,18 @@ namespace CppUtils {
         std::string toHexString() const;
 
 #ifdef QT_CORE_LIB
-    QColor toQColor() const;
+        QColor toQColor() const;
 #endif
 
-#if defined(__OBJC__)
-    inline NSColor* toNSColor() const {
-        return [NSColor colorWithRed:r()/255.0 green:g()/255.0 blue:b()/255.0 alpha:a()/255.0];
-    }
+#ifdef HAS_COCOA
+        inline NSColor* toNSColor() const {
+            return [NSColor colorWithRed:r()/255.0 green:g()/255.0 blue:b()/255.0 alpha:a()/255.0];
+        }
+#endif
+#ifdef HAS_UIKIT
+        inline UIColor* toUIColor() const {
+            return [UIColor colorWithRed:r()/255.0 green:g()/255.0 blue:b()/255.0 alpha:a()/255.0];
+        }
 #endif
     };
 }
@@ -72,5 +87,8 @@ namespace std {
     };
 
 }
+
+#undef HAS_COCOA
+#undef HAS_UIKIT
 
 #endif // DRAWERCOLOR_H

@@ -52,11 +52,18 @@ Bitmap::Bitmap(Bitmap &&bitmap) {
     this->height = bitmap.height;
     this->data = bitmap.data;
     bitmap.data = nullptr;
+    bitmap.width = -1;
+    bitmap.height = -1;
 }
 
 Bitmap::Bitmap(const Bitmap &bitmap) {
-    init(bitmap.width, bitmap.height);
-    std::copy(bitmap.data, bitmap.data + getDataArraySize(), data);
+    if (bitmap.data) {
+        init(bitmap.width, bitmap.height);
+        std::copy(bitmap.data, bitmap.data + getDataArraySize(), data);
+    } else {
+        width = -1;
+        height = -1;
+    }
 }
 
 void Bitmap::init(int width, int height) {
@@ -75,10 +82,16 @@ void Bitmap::fill(const Color &color) {
 }
 
 Bitmap::Bitmap(int width, int height, unsigned char *data) {
+    assert(data);
     init(width, height);
     std::copy(data, data + getDataArraySize(), this->data);
 }
 
 int Bitmap::getDataArraySize() const {
     return width * height * PIXEL_SIZE;
+}
+
+Bitmap::Bitmap() {
+    width = -1;
+    height = -1;
 }
