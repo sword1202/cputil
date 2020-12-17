@@ -6,11 +6,7 @@
 #include <QColor>
 #endif
 
-#if defined(__OBJC__) && TARGET_OS_MAC && !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
-#define HAS_COCOA
-#elif defined(__OBJC__) && (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
-#define HAS_UIKIT
-#endif
+#include "DefineAppleConditionals.h"
 
 #ifdef HAS_COCOA
 #import <Cocoa/Cocoa.h>
@@ -85,10 +81,8 @@ namespace std {
             return (size_t) reinterpret_cast<const int32_t&>(k);
         }
     };
-
 }
 
-#undef HAS_COCOA
-#undef HAS_UIKIT
+#include "UndefAppleConditionals.h"
 
 #endif // DRAWERCOLOR_H
