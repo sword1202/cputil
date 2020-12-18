@@ -14,19 +14,28 @@ namespace CppUtils {
 
         void init(int width, int height);
     public:
-#if __OBJC__
+#if defined(__OBJC__)
         static inline Bitmap fromCGImage(CGImage* image) {
-#if defined(__OBJC__) && TARGET_OS_MAC && !TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
             NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithCGImage:image];
             return Bitmap(int(rep.size.width), int(rep.size.height), rep.bitmapData);
 #else
-            CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(image));
-            UInt8* buf = (UInt8 *) CFDataGetBytePtr(rawData);
-            CFIndex length = CFDataGetLength(rawData);
-            int width = static_cast<int>(CGImageGetWidth(image));
-            int height = static_cast<int>(CGImageGetHeight(image));
-            Bitmap bitmap(width, height, buf);
-            CFRelease(rawData);
+            NSUInteger width = CGImageGetWidth(image);
+            NSUInteger height = CGImageGetHeight(image);
+            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+            Bitmap bitmap(static_cast<int>(width), static_cast<int>(height));
+            bitmap.fill(Color::transparent());
+            NSUInteger bytesPerPixel = 4;
+            NSUInteger bytesPerRow = bytesPerPixel * width;
+            NSUInteger bitsPerComponent = 8;
+            CGContextRef context = CGBitmapContextCreate(bitmap.data,
+                    width, height, bitsPerComponent,
+                    bytesPerRow, colorSpace,
+                    kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+            CGColorSpaceRelease(colorSpace);
+
+            CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
+            CGContextRelease(context);
             return bitmap;
 #endif
         }
