@@ -9,6 +9,9 @@
 #include <ostream>
 #include "HashUtils.h"
 #include "Primitives.h"
+#ifdef __OBJC__
+#import <CoreGraphics/CoreGraphics.h>
+#endif
 
 namespace CppUtils {
 
@@ -24,6 +27,11 @@ namespace CppUtils {
         Point(T x, T y) : x(x), y(y) {
 
         }
+
+#ifdef __OBJC__
+        Point(const CGPoint& cgPoint) : x(cgPoint.x), y(cgPoint.y) {
+        }
+#endif
 
         bool operator==(const Point &rhs) const {
             return Primitives::CompareFloats(x, rhs.x) &&
@@ -63,6 +71,10 @@ namespace CppUtils {
         void translate(T x, T y) {
             this->x += x;
             this->y += y;
+        }
+
+        Point<T> translatedBy(T x, T y) const {
+            return Point<T>(this->x + x, this->y + y);
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Point &point) {
