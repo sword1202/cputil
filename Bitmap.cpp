@@ -15,7 +15,7 @@ Bitmap::Bitmap(int width, int height) {
 }
 
 Bitmap::~Bitmap() {
-    delete data;
+    delete[] data;
 }
 
 void Bitmap::setPixelRGBAColor(int x, int y, const uchar *rgba) {
