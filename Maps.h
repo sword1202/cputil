@@ -57,6 +57,22 @@ namespace CppUtils {
                 return defaultValue;
             }
         }
+
+        template <typename Map, typename Key>
+        std::optional<typename Map::mapped_type> GetIfExists(const Map& map, const Key& key) {
+            auto iter = map.find(key);
+            if (iter == map.end()) {
+                return std::nullopt;
+            }
+
+            return iter->second;
+        }
+
+        template <typename Map>
+        typename Map::mapped_type* InsertAndGetInsertedValue(Map& map, const typename Map::key_type& key,
+                const typename Map::mapped_type& value) {
+            return &map.insert(std::make_pair(key, value)).first->second;
+        }
     };
 }
 
