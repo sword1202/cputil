@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include "Streams.h"
+#include "StringEncodingUtils.h"
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
@@ -143,6 +144,24 @@ namespace CppUtils {
                               std::basic_string<Char, Allocator>(replacement));
         };
 
+        // Example: RemoveAllSequenceRepetitions("i am a ggggood man", 'g') -> "i am a good man"
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> RemoveAllCharacterRepetitions(const std::basic_string<Char, Allocator> &source, Char targetChar) {
+            assert(targetChar != '\0');
+            std::basic_string<Char, Allocator> result;
+            result.reserve(source.size());
+            char lastChar = '\0';
+            for (int i = 0; i < source.size(); ++i) {
+                char ch = source[i];
+                if (ch != targetChar || ch != lastChar) {
+                    result.push_back(ch);
+                    lastChar = ch;
+                }
+            }
+
+            return result;
+        }
+
         template<typename Char, typename Allocator>
         bool StartsWith(const std::basic_string<Char, Allocator> &source,
                         const Char* value) {
@@ -270,15 +289,17 @@ namespace CppUtils {
             return Split(std::basic_string<Char>(string), delimiter);
         }
 
-        template<typename Char>
-        std::vector<int> SplitIntegers(const std::basic_string<Char>& string, 
+        template<typename Object, typename Char, typename ObjectParser>
+        std::vector<Object> SplitObjects(const std::basic_string<Char>& string,
+                const ObjectParser& parser,
                 int begin, int end, Char delimiter, bool* success) {
-            std::vector<int> result;
+            *success = true;
+            std::vector<Object> result;
             auto split = Split(string, begin, end, delimiter);
             for (const auto& str : split) {
                 int value;
                 try {
-                    value = std::stoi(str);
+                    value = parser(str);
                 } catch (...) {
                     *success = false;
                     return result;
@@ -287,8 +308,15 @@ namespace CppUtils {
                 result.push_back(value);
             }
 
-            *success = true;
             return result;
+        }
+
+        template<typename Char>
+        std::vector<int> SplitIntegers(const std::basic_string<Char>& string,
+                int begin, int end, Char delimiter, bool* success) {
+            return SplitObjects<int>(string, [&] (const auto& str) {
+                return ParseInt(str, success);
+            }, begin, end, delimiter, success);
         }
 
         template<typename Char>
@@ -455,12 +483,102 @@ namespace CppUtils {
         }
 
         template<typename Char, typename Allocator>
-        int ParseInt(const std::basic_string<Char, Allocator>& str, int defaultValue = 0) {
+        int TryParseInt(const std::basic_string<Char, Allocator>& str, int defaultValue = 0) {
             try {
                 return std::stoi(str);
             } catch (std::exception& e) {
                 return defaultValue;
             }
+        }
+
+        template<typename Char, typename Allocator>
+        int ParseUnsignedInt(const std::basic_string<Char, Allocator>& str, int begin, int end) {
+            if (begin >= end) {
+                return -1;
+            }
+
+            if (begin < 0) {
+                return -1;
+            }
+
+            if (end > str.size()) {
+                return -1;
+            }
+
+            int result = 0;
+            int multiplier = 1;
+            for (int i = begin; i < end; ++i) {
+                Char ch = str[i];
+                int digit = ch - static_cast<Char>('0');
+                if (digit <= 1 && digit <= 9) {
+                    result += digit * multiplier;
+                } else if (digit == 0) {
+                    if (multiplier > 1 && result == 0) {
+                        return -1;
+                    }
+                } else {
+                    return -1;
+                }
+
+                multiplier *= 10;
+            }
+
+            return result;
+        }
+
+        template<typename Allocator, typename Char, typename std::enable_if <std::is_same<Char, char>::value || std::is_same<Char, wchar_t>::value>::type* = nullptr>
+        double ParseDouble(const std::basic_string<Char, Allocator>& str, bool* success) {
+            *success = true;
+            try {
+                return std::stod(str);
+            } catch (...) {
+                *success = false;
+                return 0;
+            }
+        }
+
+        template<typename Allocator>
+        double ParseDouble(const std::basic_string<char32_t, Allocator>& str, bool* success) {
+            return ParseDouble(UtfUtils::ToUtf8(str), success);
+        }
+
+        template<typename Char>
+        std::vector<double> SplitDoubles(const std::basic_string<Char>& string,
+                int begin, int end, Char delimiter, bool* success) {
+            return SplitObjects<double>(string, [&] (const auto& str) {
+                return ParseDouble(str, success);
+            }, begin, end, delimiter, success);
+        }
+
+        template<typename Char, typename Allocator>
+        int ParseInt(const std::basic_string<Char, Allocator>& str, bool* success) {
+            return ParseInt(str, 0, static_cast<int>(str.size()), success);
+        }
+
+        template<typename Char, typename Allocator>
+        int ParseInt(const std::basic_string<Char, Allocator>& str, int begin, int end, bool* success) {
+            if (str.size() <= begin) {
+                *success = false;
+                return 0;
+            }
+
+            int sign = 1;
+            if (str[begin] == '-') {
+                sign = -1;
+                begin++;
+            } else if (str[begin] == '+') {
+                begin++;
+            }
+
+            int parseUnsigned = ParseUnsignedInt(str, begin, end);
+            if (parseUnsigned < 0) {
+                *success = false;
+                return 0;
+            } else {
+                *success = true;
+            }
+
+            return sign * parseUnsigned;
         }
 
         template<typename Char, typename Allocator>
@@ -507,6 +625,16 @@ namespace CppUtils {
                 *name = str.substr(0, indexOfDot);
                 *extension = str.substr(indexOfDot + 1);
             }
+        }
+
+        template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> LeftTrim(const std::basic_string<Char, Allocator>& str) {
+            int i = 0;
+            while (i < str.size() && std::isspace(str[i])) {
+                i++;
+            }
+
+            return str.substr(static_cast<size_t>(i));
         }
     }
 }

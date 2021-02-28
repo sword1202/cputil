@@ -340,6 +340,16 @@ namespace CppUtils {
         return initialValue;
     }
 
+    template<typename Result, typename Container, typename Transformer>
+    auto Sum(const Container& data, const Transformer& transformer,
+            Result initialValue = Result()) {
+        for (const auto& o : data) {
+            initialValue += transformer(o);
+        }
+
+        return initialValue;
+    }
+
     template<typename Result, typename T>
     Result AbsoluteSum(const T* data, int size) {
         return Sum<Result>(data, size, [] (T value) {
@@ -423,6 +433,50 @@ namespace CppUtils {
     bool Equal(const Container1& a, const Container2& b) {
         return a.size() == b.size()
         && std::equal(a.begin(), a.end(), b.begin());
+    }
+
+    // Callback -> func(const T* current, const T* prev)
+    template <typename Container, typename Callback>
+    void IteratePassingPrevElement(const Container& container, const Callback& callback) {
+        if (container.empty()) {
+            return;
+        }
+
+        if (container.size() == 1) {
+            callback(&*container.begin(), nullptr);
+        }
+
+        auto prev = container.begin();
+        auto iter = prev;
+        callback(&*iter, nullptr);
+        ++iter;
+        while (iter != container.end()) {
+            callback(&*iter, &*prev);
+            prev = iter;
+            ++iter;
+        }
+    }
+
+    // Callback -> func(const T* current, const T* prev)
+    template <typename Container, typename Callback>
+    void IteratePassingNextElement(const Container& container, const Callback& callback) {
+        if (container.empty()) {
+            return;
+        }
+
+        if (container.size() == 1) {
+            callback(&*container.begin(), nullptr);
+        }
+
+        auto current = container.begin();
+        auto next = ++current;
+        while (next != container.end()) {
+            callback(&*current, &*next);
+            current = next;
+            ++next;
+        }
+
+        callback(&*current, nullptr);
     }
 }
 
