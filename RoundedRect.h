@@ -30,6 +30,9 @@ namespace CppUtils {
             assert(height >= radius * 2);
         }
 
+        RoundedRect(Float x, Float y, Float width, Float height, Float radius)
+                : RoundedRect(Point<Float>(x, y), width, height, radius) {}
+
         Float getRadius() const {
             return radius;
         }
