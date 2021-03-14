@@ -20,7 +20,7 @@ namespace CppUtils {
         Rect() = default;
 
         bool containsPoint(T x, T y) const {
-            return x >= A.x && x < A.x + width && y >= A.y && y < A.y + height;
+            return x >= A.x && x <= A.x + width && y >= A.y && y <= A.y + height;
         }
 
         bool containsPoint(const Point<T>& point) const {

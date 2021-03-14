@@ -218,6 +218,15 @@ namespace CppUtils {
         void translate(Float x, Float y) {
             A.translate(x, y);
         }
+
+        Rect<Float> toRect() const {
+            return Rect<Float>(A, width, height);
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const RoundedRect &rect) {
+            os << rect.A << " width: " << rect.width << " height: " << rect.height << " radius: " << rect.radius;
+            return os;
+        }
     };
 
     typedef RoundedRect<float> RoundedRectF;
