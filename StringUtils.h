@@ -163,6 +163,13 @@ namespace CppUtils {
         }
 
         template<typename Char, typename Allocator>
+        std::basic_string<Char, Allocator> RemovePrefix(
+                const std::basic_string<Char, Allocator> &source, int prefixLength
+        ) {
+            return source.substr(static_cast<size_t>(prefixLength), source.size() - prefixLength);
+        }
+
+        template<typename Char, typename Allocator>
         bool StartsWith(const std::basic_string<Char, Allocator> &source,
                         const Char* value) {
             size_t sourceSize = source.size();
@@ -297,7 +304,7 @@ namespace CppUtils {
             std::vector<Object> result;
             auto split = Split(string, begin, end, delimiter);
             for (const auto& str : split) {
-                int value;
+                Object value;
                 try {
                     value = parser(str);
                 } catch (...) {
@@ -635,6 +642,18 @@ namespace CppUtils {
             }
 
             return str.substr(static_cast<size_t>(i));
+        }
+
+        template<typename Char, typename Allocator>
+        int IndexOfCharInSubString(const std::basic_string<Char, Allocator>& str, int begin, int end, Char ch) {
+            size_t size = std::min(str.size(), size_t(end));
+            for (int i = begin; i < size; ++i) {
+                if (ch == str[i]) {
+                    return i;
+                }
+            }
+
+            return -1;
         }
     }
 }
