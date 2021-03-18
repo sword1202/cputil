@@ -7,6 +7,7 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
+#include <iostream>
 
 #include "Streams.h"
 #include "StringEncodingUtils.h"
@@ -18,8 +19,8 @@
 namespace CppUtils {
     namespace Strings {
 #ifdef __OBJC__
-        template<typename StdString>
-        NSString* ToNSString(const StdString& str) {
+        template<typename Allocator>
+        NSString* ToNSString(const std::basic_string<char, Allocator>& str) {
             return [NSString stringWithCString:str.data()
                                       encoding:[NSString defaultCStringEncoding]];
         }
@@ -27,6 +28,20 @@ namespace CppUtils {
         inline NSString* ToNSString(const char* str) {
             return [NSString stringWithCString:str
                                       encoding:[NSString defaultCStringEncoding]];
+        }
+
+        template<typename Allocator>
+        NSString* ToNSString(const std::basic_string<char32_t, Allocator>& str) {
+            return [[NSString alloc] initWithBytes:(void*)str.data()
+                                            length:str.size() * sizeof(char32_t)
+                                          encoding:NSUTF32LittleEndianStringEncoding];
+        }
+
+        inline NSString* ToNSString(const std::basic_string_view<char32_t>& str) {
+            return [[NSString alloc] initWithBytesNoCopy:(void*)str.data()
+                                                  length:str.size() * sizeof(char32_t)
+                                                encoding:NSUTF32LittleEndianStringEncoding
+                                            freeWhenDone:NO];
         }
 #endif
 
@@ -152,7 +167,7 @@ namespace CppUtils {
             result.reserve(source.size());
             char lastChar = '\0';
             for (int i = 0; i < source.size(); ++i) {
-                char ch = source[i];
+                Char ch = source[i];
                 if (ch != targetChar || ch != lastChar) {
                     result.push_back(ch);
                     lastChar = ch;
