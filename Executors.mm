@@ -1,9 +1,14 @@
 #include "Executors.h"
 
 #import <dispatch/dispatch.h>
+#include <thread>
 
 namespace CppUtils {
     namespace Executors {
+
+        namespace {
+            const std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
+        }
 
         void ExecuteOnMainThreadAfterDelay(std::function<void()> function, int delayInMilliseconds) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delayInMilliseconds * NSEC_PER_SEC / 1000),
@@ -25,6 +30,10 @@ namespace CppUtils {
         }
 
         void ExecuteOnMainThread(std::function<void()> function) {
+            if (std::this_thread::get_id() == MAIN_THREAD_ID) {
+                function();
+            }
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 function();
             });
