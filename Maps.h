@@ -9,6 +9,7 @@
 #include <vector>
 #include <algorithm>
 #include <optional>
+#include <map>
 
 namespace CppUtils {
     namespace Maps {
@@ -47,7 +48,7 @@ namespace CppUtils {
 
         template <typename Map>
         auto GetOrDefault(const Map& map,
-                decltype(map.begin()->second) key,
+                decltype(map.begin()->first) key,
                 decltype(map.begin()->second) defaultValue)
         {
             auto iter = map.find(key);
