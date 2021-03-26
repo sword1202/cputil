@@ -269,6 +269,15 @@ namespace CppUtils {
         }
     }
 
+    template <typename Collection, typename Predicate>
+    void RemoveIf(Collection& collection, const Predicate& predicate) {
+        for (auto iter = collection.begin(); iter != collection.end(); ++iter) {
+            if (predicate(*iter)) {
+                collection.erase(iter);
+            }
+        }
+    }
+
     template <typename Map, typename Iter>
     void FillCountingMap(Map* map, Iter begin, Iter end) {
         std::for_each(begin, end, [=] (const auto& value) {
