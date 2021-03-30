@@ -487,6 +487,20 @@ namespace CppUtils {
 
         callback(&*current, nullptr);
     }
+
+    template <typename Collection, typename Predicate>
+    auto RemoveDuplicatesInSortedCollection(const Collection& collection, const Predicate& predicate) -> std::vector<typename Collection::value_type> {
+        std::vector<typename Collection::value_type> result;
+        const typename Collection::value_type* lastValue = nullptr;
+        for (const auto& value : collection) {
+            if (!lastValue || !predicate(*lastValue, value)) {
+                result.push_back(value);
+                lastValue = &value;
+            }
+        }
+
+        return result;
+    }
 }
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H

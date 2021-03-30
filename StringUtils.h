@@ -532,7 +532,7 @@ namespace CppUtils {
             for (int i = begin; i < end; ++i) {
                 Char ch = str[i];
                 int digit = ch - static_cast<Char>('0');
-                if (digit <= 1 && digit <= 9) {
+                if (digit >= 1 && digit <= 9) {
                     result += digit * multiplier;
                 } else if (digit == 0) {
                     if (multiplier > 1 && result == 0) {
