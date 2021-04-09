@@ -116,14 +116,28 @@ namespace CppUtils {
     // less than (i.e. greater or equal to) value, or last if no such element is found.
     template<typename Iterator, typename KeyProvider, typename Value>
     Iterator LowerBoundByKey(Iterator begin, Iterator end, const Value& value, const KeyProvider& keyProvider) {
-        return std::lower_bound(begin, end, value, [&](const Value& a, const Value b){
-            return keyProvider(a) < keyProvider(b);
-        });
+        // Copied from STL and modified
+        typedef typename std::iterator_traits<Iterator>::difference_type difference_type;
+        difference_type __len = _VSTD::distance(begin, end);
+        while (__len != 0)
+        {
+            difference_type __l2 = _VSTD::__half_positive(__len);
+            Iterator __m = begin;
+            _VSTD::advance(__m, __l2);
+            if (keyProvider(*__m) < value) {
+                begin = ++__m;
+                __len -= __l2 + 1;
+            }
+            else
+                __len = __l2;
+        }
+
+        return begin;
     }
 
     template<typename Collection, typename KeyProvider, typename Value>
     auto LowerBoundByKey(Collection& collection, const Value& value, const KeyProvider& keyProvider) {
-        return LowerBoundByKey(StlDebugUtils::begin(collection), StlDebugUtils::end(collection), value, keyProvider);
+        return LowerBoundByKey(collection.begin(), collection.end(), value, keyProvider);
     };
 
     // Returns an iterator pointing to the first element in the range [first, last)
@@ -396,6 +410,19 @@ namespace CppUtils {
             FindRangeInSortedCollection(const Collection& collection, const Value& a, const Value& b) {
         auto begin = std::lower_bound(collection.begin(), collection.end(), a);
         auto end = std::upper_bound(collection.begin(), collection.end(), b);
+
+        if (end - begin <= 0) {
+            return std::make_pair(collection.end(), collection.end());
+        }
+
+        return std::make_pair(begin, end);
+    }
+
+    template <typename Collection, typename Value, typename KeyProvider>
+    std::pair<typename Collection::const_iterator, typename Collection::const_iterator>
+    FindRangeInSortedCollectionUsingKeyProvider(const Collection& collection, const KeyProvider& keyProvider, const Value& a, const Value& b) {
+        auto begin = LowerBoundByKey(collection.begin(), collection.end(), a, keyProvider);
+        auto end = LowerBoundByKey(collection.begin(), collection.end(), b, keyProvider);
 
         if (end - begin <= 0) {
             return std::make_pair(collection.end(), collection.end());
