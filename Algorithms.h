@@ -501,6 +501,15 @@ namespace CppUtils {
 
         return result;
     }
+
+    template <typename Collection>
+    auto GetLastOrDefault(const Collection& collection, const typename Collection::value_type& defaultValue) -> const typename Collection::value_type& {
+        if (collection.empty()) {
+            return defaultValue;
+        } else {
+            return collection.back();
+        }
+    }
 }
 
 #endif //PITCHDETECTION_AZAZAI_ALGO_H
