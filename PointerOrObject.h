@@ -6,6 +6,7 @@
 #define VOCALTRAINER_POINTERORORIGINAL_H
 
 #include <type_traits>
+#include <assert.h>
 
 // This type is a variant. It can hold a pointer to already allocated storage
 // (also pointer to type allocated in a stack) or allocate its own storage
