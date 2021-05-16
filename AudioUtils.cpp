@@ -116,6 +116,20 @@ namespace AudioUtils {
         return ResizePreviewSamples(reinterpret_cast<const short*>(rawPcm.data()), size, newSize);
     }
 
+    std::vector<float> ResizePreviewSamplesIntoFloatSamples(const std::string& rawPcm, int newSize) {
+        int size = int(rawPcm.size() / sizeof(short));
+        return ResizePreviewSamplesIntoFloatSamples(reinterpret_cast<const short*>(rawPcm.data()), size, newSize);
+    }
+
+    std::vector<float> ResizePreviewSamplesIntoFloatSamples(const short* samples, int samplesSize, int newSize) {
+        std::vector<float> result(static_cast<size_t>(newSize));
+        std::vector<short> shortSamples = AudioUtils::ResizePreviewSamples(
+                samples, samplesSize, newSize);
+        assert(shortSamples.size() == newSize);
+        AudioUtils::Int16SamplesIntoFloatSamples(shortSamples.data(), newSize, result.data());
+        return result;
+    }
+
     void Mix2Sounds(const short* soundA, const short* soundB, int size, short* out) {
         for (int i = 0; i < size; ++i) {
             auto a = uint16_t(soundA[i]);

@@ -24,6 +24,9 @@ namespace AudioUtils {
     std::vector<short> ResizePreviewSamples(const std::string& rawPcm, int newSize);
     std::vector<short> ResizePreviewSamples(const short* samples, int samplesSize, int newSize);
 
+    std::vector<float> ResizePreviewSamplesIntoFloatSamples(const std::string& rawPcm, int newSize);
+    std::vector<float> ResizePreviewSamplesIntoFloatSamples(const short* samples, int samplesSize, int newSize);
+
     void Mix2Sounds(const short* soundA, const short* soundB, int size, short* out);
     void Mix2Sounds(const short* soundA, const short* soundB, int sizeA, int sizeB, short* out);
     
