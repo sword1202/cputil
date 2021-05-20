@@ -6,6 +6,9 @@
 #ifndef VOCALTRAINER_COLLECTIONS_H
 #define VOCALTRAINER_COLLECTIONS_H
 
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#endif
 
 namespace CppUtils {
     namespace Collections {
@@ -14,6 +17,18 @@ namespace CppUtils {
             static std::vector<T> vector;
             return vector;
         }
+
+#ifdef __OBJC__
+        template <typename Container>
+        NSMutableArray<NSNumber*>* ToPrimitivesNSArray(const Container& container) {
+            NSMutableArray* result = [NSMutableArray arrayWithCapacity:static_cast<NSUInteger>(container.size())];
+            for (auto sample : container) {
+                [result addObject:@(sample)];
+            }
+
+            return result;
+        }
+#endif
     }
 };
 
