@@ -41,7 +41,7 @@ namespace CppUtils {
 
             template <typename T>
             void operator()(T& o) {
-                SaveOrLoad(o, *this, true);
+                SaveOrLoad(o, *this, false);
             }
 
             template <typename T>

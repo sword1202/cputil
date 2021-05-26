@@ -22,6 +22,54 @@ namespace CppUtils {
             archive.asRaw(o);
         }
 
+        template <typename Archive>
+        void SaveOrLoad(int& o, Archive& archive, bool save) {
+            if (save) {
+                int64_t copy = o;
+                archive(copy);
+            } else {
+                int64_t val = 0;
+                archive(val);
+                o = static_cast<int>(val);
+            }
+        }
+
+        template <typename Archive>
+        void SaveOrLoad(size_t& o, Archive& archive, bool save) {
+            if (save) {
+                uint64_t copy = o;
+                archive(copy);
+            } else {
+                uint64_t val = 0;
+                archive(val);
+                o = static_cast<size_t>(val);
+            }
+        }
+
+        template <typename Archive>
+        void SaveOrLoad(unsigned int& o, Archive& archive, bool save) {
+            if (save) {
+                uint64_t copy = o;
+                archive(copy);
+            } else {
+                uint64_t val = 0;
+                archive(val);
+                o = static_cast<unsigned int>(val);
+            }
+        }
+
+        template <typename Archive>
+        void SaveOrLoad(long& o, Archive& archive, bool save) {
+            if (save) {
+                int64_t copy = o;
+                archive(copy);
+            } else {
+                int64_t val = 0;
+                archive(val);
+                o = static_cast<int>(val);
+            }
+        }
+
         template <typename T, typename Archive>
         auto SaveOrLoad(T& o, Archive& archive, bool save) -> typename std::enable_if<CppUtils::has_saveOrLoad<T, void(Archive&, bool)>::value, void>::type {
             o.saveOrLoad(archive, save);
@@ -87,7 +135,22 @@ namespace CppUtils {
 
         template <typename T, typename Archive>
         auto SaveOrLoad(std::vector<T>& v, Archive& archive, bool save)
-        -> typename std::enable_if<std::is_arithmetic<T>::value, void>::type {
+        -> typename std::enable_if<
+                std::is_same<T, float>::value ||
+                std::is_same<T, double>::value ||
+                std::is_same<T, int32_t>::value ||
+                std::is_same<T, int64_t>::value ||
+                std::is_same<T, int16_t>::value ||
+                std::is_same<T, int8_t>::value ||
+                std::is_same<T, char>::value ||
+                std::is_same<T, unsigned char>::value ||
+                std::is_same<T, bool>::value ||
+                std::is_same<T, short>::value ||
+                std::is_same<T, uint32_t>::value ||
+                std::is_same<T, uint64_t>::value ||
+                std::is_same<T, uint16_t>::value ||
+                std::is_same<T, uint8_t>::value
+        , void>::type {
             SaveOrLoadPrimitiveDataContainer(v, archive);
         }
     }
