@@ -127,6 +127,7 @@ int WAVFile::getAudioFormat() const {
 }
 
 WavConfig WAVFile::parseWavHeader(const char *data) {
+    assert(isWavFile(data, DATA_POSITION + 1));
     WavConfig config;
     config.numberOfChannels = *reinterpret_cast<const uint16_t*>(data + CHANNELS_NUMBER_POSITION);
     config.sampleRate = *reinterpret_cast<const uint32_t*>(data + SAMPLE_RATE_POSITION);
