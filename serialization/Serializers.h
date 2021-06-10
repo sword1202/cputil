@@ -11,6 +11,9 @@
 #include <vector>
 #include <map>
 
+static_assert(sizeof(int) == sizeof(int32_t) && sizeof(long) == sizeof(int64_t),
+        "Serialization is not supported by platform");
+
 namespace CppUtils {
     namespace Serialization {
         template <
@@ -20,54 +23,6 @@ namespace CppUtils {
         >
         void SaveOrLoad(T& o, Archive& archive, bool save) {
             archive.asRaw(o);
-        }
-
-        template <typename Archive>
-        void SaveOrLoad(int& o, Archive& archive, bool save) {
-            if (save) {
-                int64_t copy = o;
-                archive(copy);
-            } else {
-                int64_t val = 0;
-                archive(val);
-                o = static_cast<int>(val);
-            }
-        }
-
-        template <typename Archive>
-        void SaveOrLoad(size_t& o, Archive& archive, bool save) {
-            if (save) {
-                uint64_t copy = o;
-                archive(copy);
-            } else {
-                uint64_t val = 0;
-                archive(val);
-                o = static_cast<size_t>(val);
-            }
-        }
-
-        template <typename Archive>
-        void SaveOrLoad(unsigned int& o, Archive& archive, bool save) {
-            if (save) {
-                uint64_t copy = o;
-                archive(copy);
-            } else {
-                uint64_t val = 0;
-                archive(val);
-                o = static_cast<unsigned int>(val);
-            }
-        }
-
-        template <typename Archive>
-        void SaveOrLoad(long& o, Archive& archive, bool save) {
-            if (save) {
-                int64_t copy = o;
-                archive(copy);
-            } else {
-                int64_t val = 0;
-                archive(val);
-                o = static_cast<int>(val);
-            }
         }
 
         template <typename T, typename Archive>
@@ -129,27 +84,19 @@ namespace CppUtils {
         }
 
         template <typename Char, typename Archive>
-        void SaveOrLoad(std::basic_string<Char>& str, Archive& archive, bool save) {
+        auto SaveOrLoad(std::basic_string<Char>& str, Archive& archive, bool save)
+        -> typename std::enable_if<
+                std::is_same<Char, char>::value ||
+                std::is_same<Char, char16_t>::value ||
+                std::is_same<Char, char32_t>::value
+        , void>::type {
             SaveOrLoadPrimitiveDataContainer(str, archive);
         }
 
         template <typename T, typename Archive>
         auto SaveOrLoad(std::vector<T>& v, Archive& archive, bool save)
         -> typename std::enable_if<
-                std::is_same<T, float>::value ||
-                std::is_same<T, double>::value ||
-                std::is_same<T, int32_t>::value ||
-                std::is_same<T, int64_t>::value ||
-                std::is_same<T, int16_t>::value ||
-                std::is_same<T, int8_t>::value ||
-                std::is_same<T, char>::value ||
-                std::is_same<T, unsigned char>::value ||
-                std::is_same<T, bool>::value ||
-                std::is_same<T, short>::value ||
-                std::is_same<T, uint32_t>::value ||
-                std::is_same<T, uint64_t>::value ||
-                std::is_same<T, uint16_t>::value ||
-                std::is_same<T, uint8_t>::value
+                std::is_arithmetic<T>::value
         , void>::type {
             SaveOrLoadPrimitiveDataContainer(v, archive);
         }
