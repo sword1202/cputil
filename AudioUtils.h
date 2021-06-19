@@ -22,6 +22,7 @@ namespace AudioUtils {
     void FloatSamplesIntoInt16Samples(const float* in, int size, short* out);
 
     std::vector<short> ResizePreviewSamples(const std::string& rawPcm, int newSize);
+    std::vector<short> ResizePreviewSamplesFromWavData(const std::string& wavData, int newSize);
     std::vector<short> ResizePreviewSamples(const short* samples, int samplesSize, int newSize);
 
     std::vector<float> ResizePreviewSamplesIntoFloatSamples(const std::string& rawPcm, int newSize);

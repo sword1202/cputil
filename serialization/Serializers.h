@@ -11,7 +11,7 @@
 #include <vector>
 #include <map>
 
-static_assert(sizeof(int) == sizeof(int32_t) && sizeof(long) == sizeof(int64_t),
+static_assert(sizeof(int) == 4 && sizeof(long) == 8 && sizeof(float) == 4 && sizeof(double) == 8 && sizeof(bool) == 1 && sizeof(short) == 2,
         "Serialization is not supported by platform");
 
 namespace CppUtils {

@@ -7,6 +7,7 @@
 #include "AudioUtils.h"
 #include "Algorithms.h"
 #include "MathUtils.h"
+#include "WAVFile.h"
 
 using namespace CppUtils;
 
@@ -114,6 +115,12 @@ namespace AudioUtils {
     std::vector<short> ResizePreviewSamples(const std::string& rawPcm, int newSize) {
         int size = int(rawPcm.size() / sizeof(short));
         return ResizePreviewSamples(reinterpret_cast<const short*>(rawPcm.data()), size, newSize);
+    }
+
+    std::vector<short> ResizePreviewSamplesFromWavData(const std::string& wavData, int newSize) {
+        int size = int((wavData.size() - WAVFile::DATA_POSITION) / sizeof(short));
+        return ResizePreviewSamples(
+                reinterpret_cast<const short*>(wavData.data() + WAVFile::DATA_POSITION), size, newSize);
     }
 
     std::vector<float> ResizePreviewSamplesIntoFloatSamples(const std::string& rawPcm, int newSize) {
