@@ -11,6 +11,7 @@
 
 #include "Streams.h"
 #include "StringEncodingUtils.h"
+#include "Algorithms.h"
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
@@ -182,6 +183,26 @@ namespace CppUtils {
                 const std::basic_string<Char, Allocator> &source, int prefixLength
         ) {
             return source.substr(static_cast<size_t>(prefixLength), source.size() - prefixLength);
+        }
+
+        template<typename Char, typename Allocator>
+        void RemoveAllAfterCharacter(std::basic_string<Char, Allocator>* source, Char ch) {
+            auto pos = source->find_last_of(ch);
+            if (pos != std::string::npos) {
+                CppUtils::EraseEndingOfCollection(*source, pos + 1);
+            }
+        }
+
+        template<typename Char>
+        std::basic_string<Char> RemoveAllAfterCharacter(const Char* source, Char ch) {
+            std::basic_string<Char> result(source);
+            RemoveAllAfterCharacter(&result, ch);
+            return result;
+        }
+
+        template<typename Char>
+        std::basic_string<Char> RemoveFilenameFromFilePath(const Char* filePath) {
+            return RemoveAllAfterCharacter(filePath, Char('/'));
         }
 
         template<typename Char, typename Allocator>

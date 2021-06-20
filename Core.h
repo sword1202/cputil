@@ -13,7 +13,6 @@ namespace CppUtils {
         Func func;
     public:
         explicit ExecuteInTheEndOfScope(const Func& func) : func(func) {
-
         }
 
         ~ExecuteInTheEndOfScope() {
