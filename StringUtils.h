@@ -21,14 +21,14 @@ namespace CppUtils {
     namespace Strings {
 #ifdef __OBJC__
         template<typename Allocator>
-        NSString* ToNSString(const std::basic_string<char, Allocator>& str) {
+        NSString* Utf8ToNSString(const std::basic_string<char, Allocator>& str) {
             return [NSString stringWithCString:str.data()
-                                      encoding:[NSString defaultCStringEncoding]];
+                                      encoding:NSUTF8StringEncoding];
         }
 
-        inline NSString* ToNSString(const char* str) {
+        inline NSString* Utf8ToNSString(const char* str) {
             return [NSString stringWithCString:str
-                                      encoding:[NSString defaultCStringEncoding]];
+                                      encoding:NSUTF8StringEncoding];
         }
 
         template<typename Allocator>
