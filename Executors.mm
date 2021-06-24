@@ -39,9 +39,34 @@ namespace CppUtils {
             });
         }
 
+        OperationCancelerPtr ExecuteCancelableOnMainThread(std::function<void()> function) {
+            auto canceler = OperationCanceler::create();
+            ExecuteOnMainThread([=] {
+                if (canceler->isCancelled()) {
+                    return;
+                }
+
+                function();
+            });
+            return canceler;
+        }
+
         void ExecuteOnBackgroundThread(std::function<void()> function) {
             dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 function();
             });
         }
-}}
+
+        OperationCancelerPtr ExecuteCancelableOnBackgroundThread(std::function<void()> function) {
+            auto canceler = OperationCanceler::create();
+            ExecuteOnBackgroundThread([=] {
+                if (canceler->isCancelled()) {
+                    return;
+                }
+
+                function();
+            });
+            return canceler;
+        }
+    }
+}

@@ -276,10 +276,14 @@ namespace CppUtils {
 
     template <typename Collection, typename Item>
     void Remove(Collection& collection, const Item& item) {
+        auto findIter = collection.end();
         for (auto iter = collection.begin(); iter != collection.end(); ++iter) {
             if (*iter == item) {
-                collection.erase(iter);
+                findIter = iter;
             }
+        }
+        if (findIter != collection.end()) {
+            collection.erase(findIter);
         }
     }
 
