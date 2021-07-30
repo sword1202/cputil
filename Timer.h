@@ -32,6 +32,8 @@ namespace CppUtils {
         int getInitialDelayInMilliseconds() const;
         int64_t getLastIterationTimeInMicroseconds() const;
         int64_t getTimerStartedTime() const;
+
+        ~Timer();
     };
 }
 

@@ -45,6 +45,26 @@ OperationCancelerPtr OnThreadExecutor::executeOnBackgroundThread(std::function<v
     return canceler;
 }
 
+OperationCancelerPtr OnThreadExecutor::executeOnMainThreadAfterDelay(std::function<void()> function, int delayMilliseconds) const {
+    auto canceler = OperationCanceler::create();
+    Executors::ExecuteCancelableOnMainThreadAfterDelay([=] {
+        if (canceler->isCancelled()) {
+            return;
+        }
+
+        {
+            LOCK;
+            Remove(operations, canceler);
+        }
+        function();
+    }, delayMilliseconds);
+    {
+        LOCK;
+        operations.push_back(canceler);
+    }
+    return canceler;
+}
+
 OnThreadExecutor::~OnThreadExecutor() {
     cancelAllOperations();
 }

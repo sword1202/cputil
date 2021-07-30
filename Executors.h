@@ -32,6 +32,7 @@ namespace CppUtils {
         mutable std::mutex mutex;
     public:
         OperationCancelerPtr executeOnMainThread(std::function<void()> function) const;
+        OperationCancelerPtr executeOnMainThreadAfterDelay(std::function<void()> function, int delayMilliseconds) const;
         OperationCancelerPtr executeOnBackgroundThread(std::function<void()> function) const;
         void cancelAllOperations();
         ~OnThreadExecutor();

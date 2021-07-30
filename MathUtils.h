@@ -64,6 +64,12 @@ namespace CppUtils {
             return static_cast<short>(value);
         }
 
+        inline unsigned char RoundToUnsignedChar(double d) {
+            int value = RoundToInt(d);
+            assert(value <= std::numeric_limits<unsigned char>::max() && value >= std::numeric_limits<unsigned char>::min());
+            return static_cast<unsigned char>(value);
+        }
+
         inline double FindNearestDividable(double value, double denominator) {
             double _;
             double k = modf(value / denominator, &_);

@@ -14,7 +14,9 @@
 
 #ifdef HAS_UIKIT
 #import <UIKit/UIKit.h>
+#include "MathUtils.h"
 #endif
+
 
 namespace CppUtils {
     typedef unsigned char uchar;
@@ -29,9 +31,14 @@ namespace CppUtils {
         static Color green();
         static Color blue();
 
-        Color();
+        static Color fromRgba(uint32_t rgba);
 
+        Color();
         Color(uchar r, uchar g, uchar b, uchar a = 255);
+        explicit Color(double r, double g, double b, double a = 1.0);
+
+        void setRgb(double r, double g, double b);
+        void setRgba(double r, double g, double b, double a);
 
         uchar operator[](int index) const;
         uchar &operator[](int index);
@@ -47,6 +54,8 @@ namespace CppUtils {
         uchar &a();
 
         const uchar *getRgba() const;
+
+        uint32_t toRgbaUint32() const;
 
         // opacity - [0.0, 1.0]
         Color applyOpacity(double opacity);
@@ -70,7 +79,24 @@ namespace CppUtils {
         inline UIColor* toUIColor() const {
             return [UIColor colorWithRed:r()/255.0 green:g()/255.0 blue:b()/255.0 alpha:a()/255.0];
         }
+
+        inline Color(UIColor* color) {
+            CGFloat r, g, b, a;
+            [color getRed:&r green:&g blue:&b alpha:&a];
+            rgba[0] = Math::RoundToUnsignedChar(255.0 * r);
+            rgba[1] = Math::RoundToUnsignedChar(255.0 * g);
+            rgba[2] = Math::RoundToUnsignedChar(255.0 * b);
+            rgba[3] = Math::RoundToUnsignedChar(255.0 * a);
+        }
 #endif
+        static void rgbToHsv(double r, double g, double b, double* hue, double* saturation, double* value);
+        static void hsvToRgb(double hue, double saturation, double value, double* r, double* g, double* b);
+        static Color fromHSV(double hue, double saturation, double value, double alpha = 1.0);
+        void getHSV(double* hue, double* saturation, double* value) const;
+        static void rotateHue(double hueChange, double* r, double* g, double* b);
+        void rotateHue(double hueChange);
+        static Color fromCmyk(double c, double m, double y, double k, uchar a = 255);
+        void getCmy(double* c, double* m, double* y) const;
     };
 }
 

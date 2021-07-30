@@ -80,3 +80,7 @@ int64_t Timer::getLastIterationTimeInMicroseconds() const {
 int64_t Timer::getTimerStartedTime() const {
     return timerStartedTime;
 }
+
+Timer::~Timer() {
+    operationCanceler->cancel();
+}
