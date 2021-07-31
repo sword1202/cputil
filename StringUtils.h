@@ -12,6 +12,7 @@
 #include "Streams.h"
 #include "StringEncodingUtils.h"
 #include "Algorithms.h"
+#include "Collections.h"
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
@@ -354,12 +355,95 @@ namespace CppUtils {
             return result;
         }
 
+        template<typename Char, typename Allocator>
+        int ParseUnsignedInt(const std::basic_string<Char, Allocator>& str, int begin, int end) {
+            if (begin >= end) {
+                return -1;
+            }
+
+            if (begin < 0) {
+                return -1;
+            }
+
+            if (end > str.size()) {
+                return -1;
+            }
+
+            int result = 0;
+            int multiplier = 1;
+            for (int i = begin; i < end; ++i) {
+                Char ch = str[i];
+                int digit = ch - static_cast<Char>('0');
+                if (digit >= 1 && digit <= 9) {
+                    result += digit * multiplier;
+                } else if (digit == 0) {
+                    if (multiplier > 1 && result == 0) {
+                        return -1;
+                    }
+                } else {
+                    return -1;
+                }
+
+                multiplier *= 10;
+            }
+
+            return result;
+        }
+
+        template<typename Char, typename Allocator>
+        int ParseInt(const std::basic_string<Char, Allocator>& str, int begin, int end, bool* success) {
+            if (str.size() <= begin) {
+                *success = false;
+                return 0;
+            }
+
+            int sign = 1;
+            if (str[begin] == '-') {
+                sign = -1;
+                begin++;
+            } else if (str[begin] == '+') {
+                begin++;
+            }
+
+            int parseUnsigned = ParseUnsignedInt(str, begin, end);
+            if (parseUnsigned < 0) {
+                *success = false;
+                return 0;
+            } else {
+                *success = true;
+            }
+
+            return sign * parseUnsigned;
+        }
+
+        template<typename Char, typename Allocator>
+        int ParseInt(const std::basic_string<Char, Allocator>& str, bool* success) {
+            return ParseInt(str, 0, static_cast<int>(str.size()), success);
+        }
+
         template<typename Char>
         std::vector<int> SplitIntegers(const std::basic_string<Char>& string,
                 int begin, int end, Char delimiter, bool* success) {
-            return SplitObjects<int>(string, [&] (const auto& str) {
+            return SplitObjects<int>(string, [&] (const std::basic_string<Char>& str) {
                 return ParseInt(str, success);
             }, begin, end, delimiter, success);
+        }
+
+        template<typename Char>
+        std::vector<int> SplitIntegers(const std::basic_string<Char>& string, Char delimiter, bool* success) {
+            return SplitIntegers(string, 0, string.size(), delimiter, success);
+        }
+
+        // Returns empty results on error
+        template<typename Char>
+        std::vector<int> SplitIntegers(const std::basic_string<Char>& string, Char delimiter) {
+            bool success;
+            auto result = SplitIntegers(string, delimiter, &success);
+            if (!success) {
+                return Collections::emptyVector<int>();
+            }
+
+            return result;
         }
 
         template<typename Char>
@@ -534,41 +618,6 @@ namespace CppUtils {
             }
         }
 
-        template<typename Char, typename Allocator>
-        int ParseUnsignedInt(const std::basic_string<Char, Allocator>& str, int begin, int end) {
-            if (begin >= end) {
-                return -1;
-            }
-
-            if (begin < 0) {
-                return -1;
-            }
-
-            if (end > str.size()) {
-                return -1;
-            }
-
-            int result = 0;
-            int multiplier = 1;
-            for (int i = begin; i < end; ++i) {
-                Char ch = str[i];
-                int digit = ch - static_cast<Char>('0');
-                if (digit >= 1 && digit <= 9) {
-                    result += digit * multiplier;
-                } else if (digit == 0) {
-                    if (multiplier > 1 && result == 0) {
-                        return -1;
-                    }
-                } else {
-                    return -1;
-                }
-
-                multiplier *= 10;
-            }
-
-            return result;
-        }
-
         template<typename Allocator, typename Char, typename std::enable_if <std::is_same<Char, char>::value || std::is_same<Char, wchar_t>::value>::type* = nullptr>
         double ParseDouble(const std::basic_string<Char, Allocator>& str, bool* success) {
             *success = true;
@@ -591,37 +640,6 @@ namespace CppUtils {
             return SplitObjects<double>(string, [&] (const auto& str) {
                 return ParseDouble(str, success);
             }, begin, end, delimiter, success);
-        }
-
-        template<typename Char, typename Allocator>
-        int ParseInt(const std::basic_string<Char, Allocator>& str, bool* success) {
-            return ParseInt(str, 0, static_cast<int>(str.size()), success);
-        }
-
-        template<typename Char, typename Allocator>
-        int ParseInt(const std::basic_string<Char, Allocator>& str, int begin, int end, bool* success) {
-            if (str.size() <= begin) {
-                *success = false;
-                return 0;
-            }
-
-            int sign = 1;
-            if (str[begin] == '-') {
-                sign = -1;
-                begin++;
-            } else if (str[begin] == '+') {
-                begin++;
-            }
-
-            int parseUnsigned = ParseUnsignedInt(str, begin, end);
-            if (parseUnsigned < 0) {
-                *success = false;
-                return 0;
-            } else {
-                *success = true;
-            }
-
-            return sign * parseUnsigned;
         }
 
         template<typename Char, typename Allocator>
