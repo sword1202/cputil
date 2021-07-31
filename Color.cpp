@@ -21,6 +21,9 @@ Color::Color(uchar r, uchar g, uchar b, uchar a) {
     rgba[3] = a;
 }
 
+Color::Color(int r, int g, int b, int a) : Color(uchar(r), uchar(g), uchar(b), uchar(a)) {
+}
+
 Color::Color(double r, double g, double b, double a) {
     setRgba(r, g, b, a);
 }

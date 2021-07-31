@@ -35,6 +35,7 @@ namespace CppUtils {
 
         Color();
         Color(uchar r, uchar g, uchar b, uchar a = 255);
+        Color(int r, int g, int b, int a = 255);
         explicit Color(double r, double g, double b, double a = 1.0);
 
         void setRgb(double r, double g, double b);
