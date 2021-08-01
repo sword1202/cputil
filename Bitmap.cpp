@@ -19,7 +19,9 @@ Bitmap::~Bitmap() {
 }
 
 void Bitmap::setPixelRGBAColor(int x, int y, const uchar *rgba) {
-    setPixelRGBAColor(x, y, rgba[0], rgba[1], rgba[2], rgba[3]);
+    assert(x < width && y < height);
+    int index = x + y * width;
+    reinterpret_cast<int32_t*>(data)[index] = *reinterpret_cast<const int32_t*>(rgba);
 }
 
 void Bitmap::setPixel(int x, int y, const Color &color) {
@@ -73,11 +75,8 @@ void Bitmap::init(int width, int height) {
 }
 
 void Bitmap::fill(const Color &color) {
-    for (int i = 0; i < getDataArraySize();) {
-        data[i++] = color.r();
-        data[i++] = color.g();
-        data[i++] = color.b();
-        data[i++] = color.a();
+    for (int i = 0; i < width * height; i++) {
+        reinterpret_cast<int32_t*>(data)[i] = *reinterpret_cast<const int32_t*>(color.getRgba());
     }
 }
 
