@@ -97,7 +97,6 @@ namespace CppUtils {
         static void rotateHue(double hueChange, double* r, double* g, double* b);
         void rotateHue(double hueChange);
         static Color fromCmyk(double c, double m, double y, double k, uchar a = 255);
-        void getCmy(double* c, double* m, double* y) const;
     };
 }
 
