@@ -36,6 +36,17 @@ namespace CppUtils {
 
             return *iter;
         }
+
+        template <typename Set, typename Function>
+        void Filter(Set& set, const Function& function) {
+            for (auto iter = set.begin(); iter != set.end();) {
+                if (function(*iter)) {
+                    ++iter;
+                } else {
+                    set.erase(iter++);
+                }
+            }
+        }
     }
 };
 
