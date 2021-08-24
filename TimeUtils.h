@@ -16,9 +16,11 @@
 
 namespace CppUtils {
 namespace TimeUtils {
-	int64_t NowInMicroseconds();
+	int64_t NowInMicrosecondsSinceStart();
+	double NowInSecondsSince1970();
+	int64_t NowInMicrosecondsSince1970();
 	std::string NowInMicrosecondsInPrettyFormat();
-	double NowInSeconds();
+	double NowInSecondsSinceStart();
 
 	// Uses std::put_time format
 	template<typename Char, typename Stream>
@@ -37,9 +39,9 @@ namespace TimeUtils {
 
 	template <typename Func, typename Stream = std::ostream>
 	void LogExecutionTime(const char* label, Func func, Stream& os = std::cout) {
-		auto now = NowInMicroseconds();
+		auto now = NowInMicrosecondsSinceStart();
 		func();
-		auto diff = NowInMicroseconds() - now;
+		auto diff = NowInMicrosecondsSinceStart() - now;
 		os<<label<<" = "<<diff<<"\n";
 	}
 
@@ -49,12 +51,12 @@ namespace TimeUtils {
 
 	template <typename Char>
     void LogExecutionTimeStart(const Char* label) {
-        times[label] = NowInMicroseconds();
+        times[label] = NowInMicrosecondsSinceStart();
 	}
 
     template <typename Stream = std::ostream>
     void LogExecutionTimeEnd(const char* label, Stream& os = std::cout) {
-        int64_t now = NowInMicroseconds();
+        int64_t now = NowInMicrosecondsSinceStart();
         auto before = times[label];
         auto diff = now - before;
         os<<label<<" = "<<diff<<"\n";

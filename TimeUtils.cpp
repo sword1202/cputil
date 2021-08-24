@@ -12,12 +12,18 @@ using namespace std::chrono;
 
 namespace CppUtils {
 namespace TimeUtils {
-    int64_t NowInMicroseconds() {
-        return duration_cast<microseconds>(high_resolution_clock::now().time_since_epoch()).count();
+    // Use this to calculate intervals
+    int64_t NowInMicrosecondsSinceStart() {
+        static int64_t start = -1;
+        if (start < 0) {
+            start = duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count();
+            return 0;
+        }
+        return duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count() - start;
     }
 
     std::string NowInMicrosecondsInPrettyFormat() {
-        int64_t now = NowInMicroseconds();
+        int64_t now = NowInMicrosecondsSinceStart();
         std::string result;
         auto microSec = now % 1000;
         auto milliSec = (now / 1000) % 1000;
@@ -26,8 +32,20 @@ namespace TimeUtils {
         return Strings::ToString(seconds, ',', milliSec, ',', microSec);
     }
 
-    double NowInSeconds() {
-        return NowInMicroseconds() / 1000000.0;
+    // Use this to calculate intervals
+    double NowInSecondsSinceStart() {
+        return NowInMicrosecondsSinceStart() / 1000000.0;
+    }
+
+    int64_t NowInMicrosecondsSince1970() {
+        return duration_cast<microseconds>(system_clock::now().time_since_epoch()).count();
+    }
+
+    double NowInSecondsSince1970() {
+        int64_t now = NowInMicrosecondsSince1970();
+        // Decrease precision to avoid double overflow.
+        now /= 1000;
+        return now / 1000.0;
     }
 
     ExecuteTimeLoggerGuard::ExecuteTimeLoggerGuard(const char* label, std::ostream& os) : os(os) {

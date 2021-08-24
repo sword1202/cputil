@@ -27,7 +27,7 @@ void Timer::start(int intervalInMilliseconds, const std::function<void()> &callb
     this->iterationsCount = 0;
     this->callback = callback;
     this->intervalInMilliseconds = intervalInMilliseconds;
-    timeSeek = TimeUtils::NowInMicroseconds();
+    timeSeek = TimeUtils::NowInMicrosecondsSinceStart();
     timerStartedTime = timeSeek;
     lastIterationTimeInMicroseconds = 0;
     currentInterval = initialDelay;
@@ -42,7 +42,7 @@ void Timer::stop() {
 void Timer::action(int interval) {
     operationCanceler = Executors::ExecuteCancelableOnMainThreadAfterDelay([=] {
         callback();
-        int64_t now = TimeUtils::NowInMicroseconds();
+        int64_t now = TimeUtils::NowInMicrosecondsSinceStart();
         int timeDiff = RoundToInt(int(now - timeSeek) / 1000.0);
         timeSeek = now;
         lastIterationTimeInMicroseconds = now;
