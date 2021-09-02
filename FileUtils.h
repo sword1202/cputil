@@ -11,6 +11,7 @@
 
 namespace CppUtils {
     namespace FileUtils {
+        uint64_t GetLastWriteTimeInMicroseconds(const char* filePath);
         uint64_t GetLastWriteTimeInMicroseconds(const std::filesystem::directory_entry& directoryEntry);
         void CreateDirectoriesForFile(const char* filePath);
     };

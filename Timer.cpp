@@ -82,5 +82,7 @@ int64_t Timer::getTimerStartedTime() const {
 }
 
 Timer::~Timer() {
-    operationCanceler->cancel();
+    if (operationCanceler) {
+        operationCanceler->cancel();
+    }
 }
