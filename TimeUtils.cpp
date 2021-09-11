@@ -10,15 +10,12 @@
 
 using namespace std::chrono;
 
+static int64_t start = duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count();
+
 namespace CppUtils {
 namespace TimeUtils {
     // Use this to calculate intervals
     int64_t NowInMicrosecondsSinceStart() {
-        static int64_t start = -1;
-        if (start < 0) {
-            start = duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count();
-            return 0;
-        }
         return duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count() - start;
     }
 
