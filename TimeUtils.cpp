@@ -40,9 +40,7 @@ namespace TimeUtils {
 
     double NowInSecondsSince1970() {
         int64_t now = NowInMicrosecondsSince1970();
-        // Decrease precision to avoid double overflow.
-        now /= 1000;
-        return now / 1000.0;
+        return now / 1000000.0;
     }
 
     ExecuteTimeLoggerGuard::ExecuteTimeLoggerGuard(const char* label, std::ostream& os) : os(os) {
