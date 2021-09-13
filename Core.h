@@ -19,14 +19,6 @@ namespace CppUtils {
             func();
         }
     };
-
-    template <typename T>
-    void CheckedDelete(T*& ptr) {
-        if (ptr) {
-            delete ptr;
-            ptr = nullptr;
-        }
-    }
 };
 
 
