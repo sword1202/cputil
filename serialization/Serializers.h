@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 static_assert(sizeof(int) == 4 && sizeof(long) == 8 && sizeof(float) == 4 && sizeof(double) == 8 && sizeof(bool) == 1 && sizeof(short) == 2,
         "Serialization is not supported by platform");
@@ -28,6 +29,13 @@ namespace CppUtils {
         template <typename T, typename Archive>
         auto SaveOrLoad(T& o, Archive& archive, bool save) -> typename std::enable_if<CppUtils::has_saveOrLoad<T, void(Archive&, bool)>::value, void>::type {
             o.saveOrLoad(archive, save);
+        }
+
+        // For classes with version
+        template <typename T, typename Archive>
+        auto SaveOrLoad(T& o, Archive& archive, bool save) -> typename std::enable_if<CppUtils::has_saveOrLoad<T, void(Archive&, bool, int)>::value, void>::type {
+            int version = archive.template getSerializationVersion<T>();
+            o.saveOrLoad(archive, save, version);
         }
 
         template <typename Container, typename Archive>
@@ -74,6 +82,11 @@ namespace CppUtils {
 
         template <typename Key, typename Value, typename Archive>
         void SaveOrLoad(std::map<Key, Value>& map, Archive& archive, bool save) {
+            SaveOrLoadInserterContainer(map, archive, save);
+        }
+
+        template <typename Key, typename Value, typename Archive>
+        void SaveOrLoad(std::unordered_map<Key, Value>& map, Archive& archive, bool save) {
             SaveOrLoadInserterContainer(map, archive, save);
         }
 
