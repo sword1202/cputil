@@ -51,7 +51,7 @@ namespace CppUtils {
 #ifndef NDEBUG
                 // Check there are no same serializationIdes for different types
                 auto iter = serializationIdTypeInfoMap.find(T::SERIALIZATION_ID);
-                assert((iter == serializationIdTypeInfoMap.end() || iter->second == &typeid(T))  && "Duplicated version ides");
+                assert((iter == serializationIdTypeInfoMap.end() || iter->second == &typeid(T))  && "Duplicated serializationIdes");
                 serializationIdTypeInfoMap[T::SERIALIZATION_ID] = &typeid(T);
 #endif
                 return T::VERSION;
