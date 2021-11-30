@@ -8,6 +8,7 @@
 
 #include <cmath>
 #include "Primitives.h"
+#include <assert.h>
 
 namespace CppUtils {
 
