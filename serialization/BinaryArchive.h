@@ -58,6 +58,7 @@ namespace CppUtils {
             }
 
             void flush() {
+                assert(activeStream == &temp && "flush cannot be called twice");
                 activeStream = &os;
                 (*this)(versionsMap);
                 os << temp.rdbuf();

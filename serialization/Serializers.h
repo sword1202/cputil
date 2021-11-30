@@ -12,7 +12,13 @@
 #include <map>
 #include <unordered_map>
 
-static_assert(sizeof(int) == 4 && sizeof(long) == 8 && sizeof(float) == 4 && sizeof(double) == 8 && sizeof(bool) == 1 && sizeof(short) == 2,
+static_assert(
+        sizeof(int) == 4 &&
+        sizeof(long long) == 8 &&
+        sizeof(float) == 4 &&
+        sizeof(double) == 8 &&
+        sizeof(bool) == 1 &&
+        sizeof(short) == 2,
         "Serialization is not supported by platform");
 
 namespace CppUtils {
@@ -24,6 +30,25 @@ namespace CppUtils {
         >
         void SaveOrLoad(T& o, Archive& archive, bool save) {
             archive.asRaw(o);
+        }
+
+        template<typename Archive>
+        void SaveOrLoad(long& o, Archive& archive, bool save) {
+            int64_t temp = o;
+            archive.asRaw(temp);
+            o = temp;
+        }
+
+        template<typename Archive>
+        void SaveOrLoad(unsigned long& o, Archive& archive, bool save) {
+            uint64_t temp = o;
+            archive.asRaw(temp);
+            o = temp;
+        }
+
+        template<typename Archive>
+        void SaveOrLoad(long double& o, Archive& archive, bool save) {
+            static_assert("Not supported");
         }
 
         template <typename T, typename Archive>

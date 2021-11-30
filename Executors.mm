@@ -10,28 +10,17 @@ namespace CppUtils {
             const std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
         }
 
-        void ExecuteOnMainThreadAfterDelay(std::function<void()> function, int delayInMilliseconds) {
+        void ExecuteOnMainThreadAfterDelay(const std::function<void()>& function, int delayInMilliseconds) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delayInMilliseconds * NSEC_PER_SEC / 1000),
                 dispatch_get_main_queue(), ^{
                     function();
                 });
         }
 
-        OperationCancelerPtr ExecuteCancelableOnMainThreadAfterDelay(std::function<void()> function, int delayInMilliseconds) {
-            auto canceler = OperationCanceler::create();
-            ExecuteOnMainThreadAfterDelay([=] {
-                if (canceler->isCancelled()) {
-                    return;
-                }
-
-                function();
-            }, delayInMilliseconds);
-            return canceler;
-        }
-
-        void ExecuteOnMainThread(std::function<void()> function) {
+        void ExecuteOnMainThread(const std::function<void()>& function) {
             if (std::this_thread::get_id() == MAIN_THREAD_ID) {
                 function();
+                return;
             }
 
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -39,34 +28,10 @@ namespace CppUtils {
             });
         }
 
-        OperationCancelerPtr ExecuteCancelableOnMainThread(std::function<void()> function) {
-            auto canceler = OperationCanceler::create();
-            ExecuteOnMainThread([=] {
-                if (canceler->isCancelled()) {
-                    return;
-                }
-
-                function();
-            });
-            return canceler;
-        }
-
-        void ExecuteOnBackgroundThread(std::function<void()> function) {
+        void ExecuteOnBackgroundThread(const std::function<void()>& function) {
             dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 function();
             });
-        }
-
-        OperationCancelerPtr ExecuteCancelableOnBackgroundThread(std::function<void()> function) {
-            auto canceler = OperationCanceler::create();
-            ExecuteOnBackgroundThread([=] {
-                if (canceler->isCancelled()) {
-                    return;
-                }
-
-                function();
-            });
-            return canceler;
         }
     }
 }

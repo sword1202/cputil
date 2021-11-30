@@ -16,14 +16,14 @@
 namespace CppUtils {
 
     namespace Executors {
-        void ExecuteOnMainThreadAfterDelay(std::function<void()> function, int delayInMilliseconds);
-        OperationCancelerPtr ExecuteCancelableOnMainThreadAfterDelay(std::function<void()> function, int delayInMilliseconds);
-        void ExecuteOnMainThread(std::function<void()> function);
-        OperationCancelerPtr ExecuteCancelableOnMainThread(std::function<void()> function);
+        void ExecuteOnMainThreadAfterDelay(const std::function<void()>&, int delayInMilliseconds);
+        OperationCancelerPtr ExecuteCancelableOnMainThreadAfterDelay(const std::function<void()>&, int delayInMilliseconds);
+        void ExecuteOnMainThread(const std::function<void()>& function);
+        OperationCancelerPtr ExecuteCancelableOnMainThread(const std::function<void()>& function);
         // don't use it for long running operations, such as downloading content, copying large files, e.t.c.
         // use std::thread instead
-        void ExecuteOnBackgroundThread(std::function<void()> function);
-        OperationCancelerPtr ExecuteCancelableOnBackgroundThread(std::function<void()> function);
+        void ExecuteOnBackgroundThread(const std::function<void()>& function);
+        OperationCancelerPtr ExecuteCancelableOnBackgroundThread(const std::function<void()>& function);
     }
 
     // Inherit your class from OnThreadExecutor to run actions on main and background thread, the actions are automatically deleted when the object is destroyed
@@ -31,9 +31,9 @@ namespace CppUtils {
         mutable std::vector<OperationCancelerPtr> operations;
         mutable std::mutex mutex;
     public:
-        OperationCancelerPtr executeOnMainThread(std::function<void()> function) const;
-        OperationCancelerPtr executeOnMainThreadAfterDelay(std::function<void()> function, int delayMilliseconds) const;
-        OperationCancelerPtr executeOnBackgroundThread(std::function<void()> function) const;
+        OperationCancelerPtr executeOnMainThread(const std::function<void()>& function) const;
+        OperationCancelerPtr executeOnMainThreadAfterDelay(const std::function<void()>& function, int delayMilliseconds) const;
+        OperationCancelerPtr executeOnBackgroundThread(const std::function<void()>& function) const;
         void cancelAllOperations();
         ~OnThreadExecutor();
     };

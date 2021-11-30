@@ -12,6 +12,7 @@
 #include <mutex>
 #include <queue>
 #include <thread>
+#include <assert.h>
 
 #include "DummyMutex.h"
 
